@@ -1,0 +1,836 @@
+ if game.PlaceId == 340809482 then
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Limited Simulator", "Sentinel")
+local Tab = Window:NewTab("Main")
+local MainSection = Tab:NewSection("Main")
+MainSection:NewButton("Auto Buy 1", "Auto Buy", function()
+       -- LimitedSimulator_AutoBuy.lua
+-- Autobuys limiteds from Limited Simulator
+ 
+local function ModuloEXP(x, n, m)
+    if n == 0 then
+        return 1
+    end
+    if n % 2 == 0 then
+        local y = ModuloEXP(x, n / 2, m)
+        return y * y % m
+    end
+    return x % m * ModuloEXP(x, n - 1, m) % m
+end
+ 
+_G.EnableAutoBuy = true
+local Items = game:GetService("ReplicatedStorage"):WaitForChild("Items")
+local Limitteds = game:GetService("ReplicatedStorage"):WaitForChild("Limitteds")
+local LocalPlayer repeat LocalPlayer = game:GetService("Players").LocalPlayer until LocalPlayer or (not wait())
+local Robux = LocalPlayer:WaitForChild("Robux")
+Limitteds.ChildAdded:Connect(function(Child)
+    if not _G.EnableAutoBuy then warn("Autobuy is disabled. Please run the code _G.EnableAutoBuy = true to enable autobuy.") return end
+    if Child:IsA("Folder") then
+        local AssetID = Child:WaitForChild("AssetID")
+        local Price = Child:WaitForChild("Price")
+        if Robux.Value >= Price.Value then
+            local Success, Result = pcall(function()
+                wait(0.5)    -- I think there's a server sided check for time
+                return Items:InvokeServer(Price.Value, AssetID.Value, Child.Name, ModuloEXP(#Limitteds:GetChildren(), 5, 6059))
+            end)
+            if Success then
+                warn((Result and "Successfully bought: " or "Failed to buy: ") .. Child.Name)
+            else
+                warn("Ran into an error when trying to buy " .. Child.Name .. ": " .. Error)
+            end
+        else
+            warn("Not enough robux (R$" .. Robux.Value .. ") to buy " .. Child.Name .. " (R$" .. Price.Value .. ").")
+        end
+    end
+end)
+ 
+warn("Auto-buy loaded!")
+    end)
+MainSection:NewButton("Auto Buy 2", "Auto Buy", function()
+    local send = game.ReplicatedStorage:WaitForChild('Items')
+
+game.ReplicatedStorage.Limitteds.ChildAdded:connect(function(c)
+     if c:IsA('Folder') then
+          local id = c:WaitForChild('AssetID')
+          local price = c:WaitForChild('Price')
+          if id and price then
+               local result
+               local succ, err = pcall(function()
+                    result = send:InvokeServer(price.Value, id.Value, c.Name)
+               end)
+               if succ then
+                    if result then
+                         warn('Successfully bought: ' .. c.Name)
+                    else
+                         warn('Failed to buy: ' .. c.Name)
+                    end
+
+               else
+                    warn('Ran into an error when trying to buy ' .. c.Name .. ': ' .. err)
+               end
+          end
+     end
+end)
+
+warn('Auto-buy loaded!')
+end)
+
+
+end
+
+wait("0.5")
+
+ if game.PlaceId == 286090429 then
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Arsenal", "Midnight")
+local Main = Window:NewTab("Main")
+local Visual = Window:NewTab("Visual")
+local Misc = Window:NewTab("Misc")
+local MainSection = Main:NewSection("Main")
+local VisualSection = Visual:NewSection("Visual")
+VisualSection:NewButton("Skeleton Esp", "Esp with skeleton", function()
+ 
+local Settings = {
+    Color = Color3.fromRGB(0, 0, 0), -- Color of the lines of the skeleton
+    Thickness = 2, -- Thickness of the lines of the Skeleton
+    Transparency = 1, -- 1 Visible - 0 Not Visible
+    AutoThickness = true -- Makes Thickness above futile, scales according to distance, good for less encumbered screen
+}
+
+--//Locals, etc:
+local plr = game.Players.LocalPlayer
+local camera = game.Workspace.CurrentCamera
+
+local function NewLine()
+    local line = Drawing.new("Line")
+    line.Visible = false
+    line.From = Vector2.new(0, 0)
+    line.To = Vector2.new(0, 0)
+    line.Color = Settings.Color
+    line.Thickness = Settings.Thickness
+    line.Transparency = Settings.Transparency
+    return line
+end
+
+--//Separation: Main Function
+
+for i, v in pairs(game:GetService("Players"):GetPlayers()) do
+    local R15
+    spawn(function()
+        repeat wait() until v.Character ~= nil and v.Character:FindFirstChild("Humanoid") ~= nil and v.Character:FindFirstChild("HumanoidRootPart") ~= nil
+        R15 = (v.Character.Humanoid.RigType == Enum.HumanoidRigType.R15) and true or false
+    end)
+
+    local Spine = {}
+    local SpineNames = {}
+    local connecthead = NewLine()
+
+    local LLeg = {}
+    local LLegNames = {}
+    local connectlegleft = NewLine()
+
+    local RLeg = {}
+    local RLegNames = {}
+    local connectlegright = NewLine()
+
+    local LArm = {}
+    local LArmNames = {}
+    local connectarmleft = NewLine()
+
+    local RArm = {}
+    local RArmNames = {}
+    local connectarmright = NewLine()
+    
+    for i,v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+        if v:IsA("BasePart") and v.Transparency ~= 1 then
+            if v.Name == "UpperTorso" or v.Name == "Torso" or v.Name == "HumanoidRootPart" or v.Name == "LowerTorso" then
+                table.insert(SpineNames, v.Name)
+                Spine[v.Name] = NewLine()
+            end
+            if v.Name == "LeftLeg" or v.Name == "LeftUpperLeg" or v.Name == "LeftLowerLeg" or v.Name == "LeftFoot" then
+                table.insert(LLegNames, v.Name)
+                LLeg[v.Name] = NewLine()
+            end
+            if v.Name == "RightLeg" or v.Name == "RightUpperLeg" or v.Name == "RightLowerLeg" or v.Name == "RightFoot" then
+                table.insert(RLegNames, v.Name)
+                RLeg[v.Name] = NewLine()
+            end
+            if v.Name == "LeftArm" or v.Name == "LeftUpperArm" or v.Name == "LeftLowerArm" or v.Name == "LeftHand" then
+                table.insert(LArmNames, v.Name)
+                LArm[v.Name] = NewLine()
+            end
+            if v.Name == "RightArm" or v.Name == "RightUpperArm" or v.Name == "RightLowerArm" or v.Name == "RightHand" then
+                table.insert(RArmNames, v.Name)
+                RArm[v.Name] = NewLine()
+            end
+        end
+    end 
+
+    local function ESP()
+        local function ConnectLimbs(limb, root, connector)
+            if v.Character:FindFirstChild(root) ~= nil and v.Character:FindFirstChild(limb) ~= nil then
+                local pos1 = camera:WorldToViewportPoint(v.Character:FindFirstChild(root).Position)
+                local pos2 = camera:WorldToViewportPoint(v.Character:FindFirstChild(limb).Position)
+                connector.From = Vector2.new(pos1.X, pos1.Y)
+                connector.To = Vector2.new(pos2.X, pos2.Y)
+            end
+        end
+        local function Visibility(state)
+            connecthead.Visible = state
+            connectarmleft.Visible = state
+            connectarmright.Visible = state
+            connectlegleft.Visible = state
+            connectlegright.Visible = state
+            for u, x in pairs(Spine) do
+                x.Visible = state
+            end
+            for u, x in pairs(LLeg) do
+                x.Visible = state
+            end
+            for u, x in pairs(RLeg) do
+                x.Visible = state
+            end
+            for u, x in pairs(LArm) do
+                x.Visible = state
+            end
+            for u, x in pairs(RArm) do
+                x.Visible = state
+            end
+        end
+        local function Thickness(state)
+            connecthead.Thickness = state
+            connectarmleft.Thickness = state
+            connectarmright.Thickness = state
+            connectlegleft.Thickness = state
+            connectlegright.Thickness = state
+            for u, x in pairs(Spine) do
+                x.Thickness = state
+            end
+            for u, x in pairs(LLeg) do
+                x.Thickness = state
+            end
+            for u, x in pairs(RLeg) do
+                x.Thickness = state
+            end
+            for u, x in pairs(LArm) do
+                x.Thickness = state
+            end
+            for u, x in pairs(RArm) do
+                x.Thickness = state
+            end
+        end
+        local function Color(color)
+            connecthead.Color = color
+            connectarmleft.Color = color
+            connectarmright.Color = color
+            connectlegleft.Color = color
+            connectlegright.Color = color
+            for u, x in pairs(Spine) do
+                x.Color = color
+            end
+            for u, x in pairs(LLeg) do
+                x.Color = color
+            end
+            for u, x in pairs(RLeg) do
+                x.Color = color
+            end
+            for u, x in pairs(LArm) do
+                x.Color = color
+            end
+            for u, x in pairs(RArm) do
+                x.Color = color
+            end
+        end
+
+        local connection
+        connection = game:GetService("RunService").RenderStepped:Connect(function()
+            if v.Character ~= nil and v.Character:FindFirstChild("Humanoid") ~= nil and v.Character:FindFirstChild("HumanoidRootPart") ~= nil and v.Name ~= plr.Name and v.Character.Humanoid.Health > 0 then
+                local pos, vis = camera:WorldToViewportPoint(v.Character.HumanoidRootPart.Position)
+                if vis then 
+                    if R15 then
+                        local a = 0
+                        for u, x in pairs(Spine) do
+                            a=a+1
+                            if SpineNames[a+1] ~= nil and v.Character:FindFirstChild(SpineNames[a+1]) ~= nil and v.Character:FindFirstChild(SpineNames[a+1]).Position ~= nil then
+                                local pos1 = camera:WorldToViewportPoint(v.Character:FindFirstChild(SpineNames[a]).Position)
+                                local pos2 = camera:WorldToViewportPoint(v.Character:FindFirstChild(SpineNames[a+1]).Position)
+                                x.From = Vector2.new(pos1.X, pos1.Y)
+                                x.To = Vector2.new(pos2.X, pos2.Y)
+                            end
+                        end
+                        local b = 0
+                        for u, x in pairs(LArm) do
+                            b=b+1
+                            if LArmNames[b+1] ~= nil and v.Character:FindFirstChild(LArmNames[b+1]) ~= nil and v.Character:FindFirstChild(LArmNames[b+1]).Position ~= nil then
+                                local pos1 = camera:WorldToViewportPoint(v.Character:FindFirstChild(LArmNames[b]).Position)
+                                local pos2 = camera:WorldToViewportPoint(v.Character:FindFirstChild(LArmNames[b+1]).Position)
+                                x.From = Vector2.new(pos1.X, pos1.Y)
+                                x.To = Vector2.new(pos2.X, pos2.Y)
+                            end
+                        end
+                        local c = 0
+                        for u, x in pairs(RArm) do
+                            c=c+1
+                            if RArmNames[c+1] ~= nil and v.Character:FindFirstChild(RArmNames[c+1]) ~= nil and v.Character:FindFirstChild(RArmNames[c+1]).Position ~= nil then
+                                local pos1 = camera:WorldToViewportPoint(v.Character:FindFirstChild(RArmNames[c]).Position)
+                                local pos2 = camera:WorldToViewportPoint(v.Character:FindFirstChild(RArmNames[c+1]).Position)
+                                x.From = Vector2.new(pos1.X, pos1.Y)
+                                x.To = Vector2.new(pos2.X, pos2.Y)
+                            end
+                        end
+                        local d = 0
+                        for u, x in pairs(LLeg) do
+                            d=d+1
+                            if LLegNames[d+1] ~= nil and v.Character:FindFirstChild(LLegNames[d+1]) ~= nil and v.Character:FindFirstChild(LLegNames[d+1]).Position ~= nil then
+                                local pos1 = camera:WorldToViewportPoint(v.Character:FindFirstChild(LLegNames[d]).Position)
+                                local pos2 = camera:WorldToViewportPoint(v.Character:FindFirstChild(LLegNames[d+1]).Position)
+                                x.From = Vector2.new(pos1.X, pos1.Y)
+                                x.To = Vector2.new(pos2.X, pos2.Y)
+                            end
+                        end
+                        local e = 0
+                        for u, x in pairs(RLeg) do
+                            e=e+1
+                            if RRLegNames[e+1] ~= nil and v.Character:FindFirstChild(RLegNames[e+1]) ~= nil and v.Character:FindFirstChild(RLegNames[e+1]).Position ~= nil then
+                                local pos1 = camera:WorldToViewportPoint(v.Character:FindFirstChild(RLegNames[e]).Position)
+                                local pos2 = camera:WorldToViewportPoint(v.Character:FindFirstChild(RLegNames[e+1]).Position)
+                                x.From = Vector2.new(pos1.X, pos1.Y)
+                                x.To = Vector2.new(pos2.X, pos2.Y)
+                            end
+                        end
+                        
+                        ConnectLimbs("LeftUpperArm", "UpperTorso", connectarmleft)
+                        ConnectLimbs("RightUpperArm", "UpperTorso", connectarmright)
+                        ConnectLimbs("LeftUpperLeg", "LowerTorso", connectlegleft)
+                        ConnectLimbs("RightUpperLeg", "LowerTorso", connectlegright)
+                        ConnectLimbs("UpperTorso", "Head", connecthead)
+                    end
+
+                    if Settings.AutoThickness then
+                        local distance = (plr.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).magnitude
+                        local value = math.clamp(1/distance*100, 0.1, 3) --0.1 is min thickness, 4 is max
+                        Thickness(value)
+                    else 
+                        Thickness(Settings.Thickness)
+                    end
+
+                    Visibility(true)
+                else 
+                    Visibility(false)
+                end
+            else 
+                Visibility(false)
+                if game.Players:FindFirstChild(v.Name) == nil then
+                    connection:Disconnect()
+                end
+            end
+        end)
+    end
+    coroutine.wrap(ESP)()
+end
+
+--// Made by Blissful#4992
+
+-- For when a player gets added:
+game.Players.PlayerAdded:Connect(function(newplr)
+    repeat wait() until newplr.Character ~= nil and newplr.Character:FindFirstChild("Humanoid") ~= nil and newplr.Character:FindFirstChild("HumanoidRootPart") ~= nil
+    local R15 = (newplr.Character.Humanoid.RigType == Enum.HumanoidRigType.R15) and true or false
+
+    local Spine = {}
+    local SpineNames = {}
+    local connecthead = NewLine()
+
+    local LLeg = {}
+    local LLegNames = {}
+    local connectlegleft = NewLine()
+
+    local RLeg = {}
+    local RLegNames = {}
+    local connectlegright = NewLine()
+
+    local LArm = {}
+    local LArmNames = {}
+    local connectarmleft = NewLine()
+
+    local RArm = {}
+    local RArmNames = {}
+    local connectarmright = NewLine()
+    
+    for i,v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+        if v:IsA("BasePart") and v.Transparency ~= 1 then
+            if v.Name == "UpperTorso" or v.Name == "Torso" or v.Name == "HumanoidRootPart" or v.Name == "LowerTorso" then
+                table.insert(SpineNames, v.Name)
+                Spine[v.Name] = NewLine()
+            end
+            if v.Name == "LeftLeg" or v.Name == "LeftUpperLeg" or v.Name == "LeftLowerLeg" or v.Name == "LeftFoot" then
+                table.insert(LLegNames, v.Name)
+                LLeg[v.Name] = NewLine()
+            end
+            if v.Name == "RightLeg" or v.Name == "RightUpperLeg" or v.Name == "RightLowerLeg" or v.Name == "RightFoot" then
+                table.insert(RLegNames, v.Name)
+                RLeg[v.Name] = NewLine()
+            end
+            if v.Name == "LeftArm" or v.Name == "LeftUpperArm" or v.Name == "LeftLowerArm" or v.Name == "LeftHand" then
+                table.insert(LArmNames, v.Name)
+                LArm[v.Name] = NewLine()
+            end
+            if v.Name == "RightArm" or v.Name == "RightUpperArm" or v.Name == "RightLowerArm" or v.Name == "RightHand" then
+                table.insert(RArmNames, v.Name)
+                RArm[v.Name] = NewLine()
+            end
+        end
+    end
+    
+
+    local function ESP()
+        local function ConnectLimbs(limb, root, connector)
+            if newplr.Character:FindFirstChild(root) ~= nil and newplr.Character:FindFirstChild(limb) ~= nil then
+                local pos1 = camera:WorldToViewportPoint(newplr.Character:FindFirstChild(root).Position)
+                local pos2 = camera:WorldToViewportPoint(newplr.Character:FindFirstChild(limb).Position)
+                connector.From = Vector2.new(pos1.X, pos1.Y)
+                connector.To = Vector2.new(pos2.X, pos2.Y)
+            end
+        end
+        local function Visibility(state)
+            connecthead.Visible = state
+            connectarmleft.Visible = state
+            connectarmright.Visible = state
+            connectlegleft.Visible = state
+            connectlegright.Visible = state
+            for u, x in pairs(Spine) do
+                x.Visible = state
+            end
+            for u, x in pairs(LLeg) do
+                x.Visible = state
+            end
+            for u, x in pairs(RLeg) do
+                x.Visible = state
+            end
+            for u, x in pairs(LArm) do
+                x.Visible = state
+            end
+            for u, x in pairs(RArm) do
+                x.Visible = state
+            end
+        end
+        local function Thickness(state)
+            connecthead.Thickness = state
+            connectarmleft.Thickness = state
+            connectarmright.Thickness = state
+            connectlegleft.Thickness = state
+            connectlegright.Thickness = state
+            for u, x in pairs(Spine) do
+                x.Thickness = state
+            end
+            for u, x in pairs(LLeg) do
+                x.Thickness = state
+            end
+            for u, x in pairs(RLeg) do
+                x.Thickness = state
+            end
+            for u, x in pairs(LArm) do
+                x.Thickness = state
+            end
+            for u, x in pairs(RArm) do
+                x.Thickness = state
+            end
+        end
+        local function Color(color)
+            connecthead.Color = color
+            connectarmleft.Color = color
+            connectarmright.Color = color
+            connectlegleft.Color = color
+            connectlegright.Color = color
+            for u, x in pairs(Spine) do
+                x.Color = color
+            end
+            for u, x in pairs(LLeg) do
+                x.Color = color
+            end
+            for u, x in pairs(RLeg) do
+                x.Color = color
+            end
+            for u, x in pairs(LArm) do
+                x.Color = color
+            end
+            for u, x in pairs(RArm) do
+                x.Color = color
+            end
+        end
+
+        local connection
+        connection = game:GetService("RunService").RenderStepped:Connect(function()
+            if newplr.Character ~= nil and newplr.Character:FindFirstChild("Humanoid") ~= nil and newplr.Character:FindFirstChild("HumanoidRootPart") ~= nil and newplr.Name ~= plr.Name  and newplr.Character.Humanoid.Health > 0 then
+                local pos, vis = camera:WorldToViewportPoint(newplr.Character.HumanoidRootPart.Position)
+                if vis then 
+                    if R15 then
+                        local a = 0
+                        for u, x in pairs(Spine) do
+                            a=a+1
+                            if SpineNames[a+1] ~= nil and newplr.Character:FindFirstChild(SpineNames[a+1]) ~= nil and newplr.Character:FindFirstChild(SpineNames[a+1]).Position ~= nil then
+                                local pos1 = camera:WorldToViewportPoint(newplr.Character:FindFirstChild(SpineNames[a]).Position)
+                                local pos2 = camera:WorldToViewportPoint(newplr.Character:FindFirstChild(SpineNames[a+1]).Position)
+                                x.From = Vector2.new(pos1.X, pos1.Y)
+                                x.To = Vector2.new(pos2.X, pos2.Y)
+                            end
+                        end
+                        local b = 0
+                        for u, x in pairs(LArm) do
+                            b=b+1
+                            if LArmNames[b+1] ~= nil and newplr.Character:FindFirstChild(LArmNames[b+1]) ~= nil and newplr.Character:FindFirstChild(LArmNames[b+1]).Position ~= nil then
+                                local pos1 = camera:WorldToViewportPoint(newplr.Character:FindFirstChild(LArmNames[b]).Position)
+                                local pos2 = camera:WorldToViewportPoint(newplr.Character:FindFirstChild(LArmNames[b+1]).Position)
+                                x.From = Vector2.new(pos1.X, pos1.Y)
+                                x.To = Vector2.new(pos2.X, pos2.Y)
+                            end
+                        end
+                        local c = 0
+                        for u, x in pairs(RArm) do
+                            c=c+1
+                            if RArmNames[c+1] ~= nil and newplr.Character:FindFirstChild(RArmNames[c+1]) ~= nil and newplr.Character:FindFirstChild(RArmNames[c+1]).Position ~= nil then
+                                local pos1 = camera:WorldToViewportPoint(newplr.Character:FindFirstChild(RArmNames[c]).Position)
+                                local pos2 = camera:WorldToViewportPoint(newplr.Character:FindFirstChild(RArmNames[c+1]).Position)
+                                x.From = Vector2.new(pos1.X, pos1.Y)
+                                x.To = Vector2.new(pos2.X, pos2.Y)
+                            end
+                        end
+                        local d = 0
+                        for u, x in pairs(LLeg) do
+                            d=d+1
+                            if LLegNames[d+1] ~= nil and newplr.Character:FindFirstChild(LLegNames[d+1]) ~= nil and newplr.Character:FindFirstChild(LLegNames[d+1]).Position ~= nil then
+                                local pos1 = camera:WorldToViewportPoint(newplr.Character:FindFirstChild(LLegNames[d]).Position)
+                                local pos2 = camera:WorldToViewportPoint(newplr.Character:FindFirstChild(LLegNames[d+1]).Position)
+                                x.From = Vector2.new(pos1.X, pos1.Y)
+                                x.To = Vector2.new(pos2.X, pos2.Y)
+                            end
+                        end
+                        local e = 0
+                        for u, x in pairs(RLeg) do
+                            e=e+1
+                            if RLegNames[e+1] ~= nil and newplr.Character:FindFirstChild(RLegNames[e+1]) ~= nil and newplr.Character:FindFirstChild(RLegNames[e+1]).Position ~= nil then
+                                local pos1 = camera:WorldToViewportPoint(newplr.Character:FindFirstChild(RLegNames[e]).Position)
+                                local pos2 = camera:WorldToViewportPoint(newplr.Character:FindFirstChild(RLegNames[e+1]).Position)
+                                x.From = Vector2.new(pos1.X, pos1.Y)
+                                x.To = Vector2.new(pos2.X, pos2.Y)
+                            end
+                        end
+                        
+                        ConnectLimbs("LeftUpperArm", "UpperTorso", connectarmleft)
+                        ConnectLimbs("RightUpperArm", "UpperTorso", connectarmright)
+                        ConnectLimbs("LeftUpperLeg", "LowerTorso", connectlegleft)
+                        ConnectLimbs("RightUpperLeg", "LowerTorso", connectlegright)
+                        ConnectLimbs("UpperTorso", "Head", connecthead)
+                    end
+
+                    if Settings.AutoThickness then
+                        local distance = (plr.Character.HumanoidRootPart.Position - newplr.Character.HumanoidRootPart.Position).magnitude
+                        local value = math.clamp(1/distance*100, 0.1, 3) --0.1 is min thickness, 4 is max
+                        Thickness(value)
+                    else 
+                        Thickness(Settings.Thickness)
+                    end
+
+                    Visibility(true)
+                else 
+                    Visibility(false)
+                end
+            else 
+                Visibility(false)
+                if game.Players:FindFirstChild(newplr.Name) == nil then
+                    connection:Disconnect()
+                end
+            end
+        end)
+    end
+    coroutine.wrap(ESP)()
+end)
+--// Made by Blissful#4992
+    end)
+VisualSection:NewButton("Motion Blur", "Motion Blur", function()
+       
+local camera = workspace.CurrentCamera
+local blurAmount = 25
+local blurAmplifier = 5
+local lastVector = camera.CFrame.LookVector
+
+local motionBlur = Instance.new("BlurEffect", camera)
+
+local runService = game:GetService("RunService")
+
+workspace.Changed:Connect(function(property)
+ if property == "CurrentCamera" then
+  print("Changed")
+  local camera = workspace.CurrentCamera
+  if motionBlur and motionBlur.Parent then
+   motionBlur.Parent = camera
+  else
+   motionBlur = Instance.new("BlurEffect", camera)
+  end
+ end
+end)
+
+runService.Heartbeat:Connect(function()
+ if not motionBlur or motionBlur.Parent == nil then
+  motionBlur = Instance.new("BlurEffect", camera)
+ end
+ 
+ local magnitude = (camera.CFrame.LookVector - lastVector).magnitude
+ motionBlur.Size = math.abs(magnitude)*blurAmount*blurAmplifier/2
+ lastVector = camera.CFrame.LookVector
+end)
+    end)
+
+
+
+
+
+MainSection:NewButton("Kill All", "Shoot to kill all", function()
+          local a
+local b
+repeat game:GetService("RunService").Heartbeat:Wait() until game.Players.LocalPlayer and game.Players.LocalPlayer.PlayerGui:FindFirstChild("GUI")
+for i,v in next, getgc() do
+  if (type(v) == 'function') and (debug.getinfo(v).name == 'firebullet') then
+     a = getfenv(v);
+     b = v
+  end
+end
+repeat game.RunService.Heartbeat:Wait() until game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+game.Players.LocalPlayer.Character.Humanoid:WaitForChild("KMS")
+local gunsilent = true
+hook = hookfunction(a.firebullet, function(...)
+   local args = {...}
+   local Gun = game.ReplicatedStorage.Weapons:FindFirstChild(game.Players.LocalPlayer.NRPBS.EquippedTool.Value);
+   if gunsilent then
+       local Crit = math.random() > .6 and true or false;
+       for i,v in pairs(game.Players:GetPlayers()) do
+           if v and v.Character and v.Character:FindFirstChild("Head") then
+               local Distance = (game.Players.LocalPlayer.Character.Head.Position - v.Character.Head.Position).magnitude
+               for i = 1,5 do
+                   game.ReplicatedStorage.Events.HitPart:FireServer(v.Character.Head,
+                   v.Character.Head.Position + Vector3.new(math.random(), math.random(), math.random()),
+                   Gun.Name,
+                   Crit and 2 or 1,
+                   Distance,
+                   Backstab,
+                   Crit,
+                   false,
+                   1,
+                   false,
+                   Gun.FireRate.Value,
+                   Gun.ReloadTime.Value,
+                   Gun.Ammo.Value,
+                   Gun.StoredAmmo.Value,
+                   Gun.Bullets.Value,
+                   Gun.EquipTime.Value,
+                   Gun.RecoilControl.Value,
+                   Gun.Auto.Value,
+                   Gun['Speed%'].Value,
+                   game.ReplicatedStorage.wkspc.DistributedTime.Value);
+               end
+           end
+       end
+   end
+return hook(...)
+end)
+       end)
+MainSection:NewButton("Silent Aim", "Aimbot But Better", function()
+         local plrs = game:GetService("Players") local plr = plrs.LocalPlayer local mouse = plr:GetMouse() local camera = game:GetService("Workspace").CurrentCamera function notBehindWall(target) local ray = Ray.new(plr.Character.Head.Position, (target.Position - plr.Character.Head.Position).Unit * 300) local part, position = game:GetService("Workspace"):FindPartOnRayWithIgnoreList(ray, {plr.Character}, false, true) if part then local humanoid = part.Parent:FindFirstChildOfClass("Humanoid") if not humanoid then humanoid = part.Parent.Parent:FindFirstChildOfClass("Humanoid") end if humanoid and target and humanoid.Parent == target.Parent then local pos, visible = camera:WorldToScreenPoint(target.Position) if visible then return true end end end end function getPlayerClosestToMouse() local target = nil local maxDist = math.huge for _,v in pairs(plrs:GetPlayers()) do if v.Character then if v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild("HumanoidRootPart") and v.TeamColor ~= plr.TeamColor then local pos, vis = camera:WorldToViewportPoint(v.Character.HumanoidRootPart.Position) local dist = (Vector2.new(mouse.X, mouse.Y) - Vector2.new(pos.X, pos.Y)).magnitude if dist < maxDist and vis then local torsoPos = camera:WorldToViewportPoint(v.Character.HumanoidRootPart.Position) local torsoDist = (Vector2.new(mouse.X, mouse.Y) - Vector2.new(torsoPos.X, torsoPos.Y)).magnitude local headPos = camera:WorldToViewportPoint(v.Character.Head.Position) local headDist = (Vector2.new(mouse.X, mouse.Y) - Vector2.new(headPos.X, headPos.Y)).magnitude if torsoDist > headDist then if notBehindWall(v.Character.Head) then target = v.Character.Head end else if notBehindWall(v.Character.HumanoidRootPart) then target = v.Character.HumanoidRootPart end end maxDist = dist end end end end return target end local gmt = getrawmetatable(game) setreadonly(gmt, false) local oldNamecall = gmt.__namecall gmt.__namecall = newcclosure(function(self, ...) local hitler = {...} local method = getnamecallmethod() if tostring(self) == "HitPart" and tostring(method) == "FireServer" then hitler[1] = getPlayerClosestToMouse() hitler[2] = getPlayerClosestToMouse().Position return self.FireServer(self, unpack(hitler)) end return oldNamecall(self, ...) end)
+    end)    
+     
+
+
+local MiscSection = Misc:NewSection("Misc")
+
+MiscSection:NewButton("Fake Name Changer", "Gives you a diff name", function()
+       local Config =
+{
+    ProtectedName = "Fake Name", --What the protected name should be called.
+    OtherPlayers = false, --If other players should also have protected names.
+    OtherPlayersTemplate = "NameProtect", --Template for other players protected name (ex: "NamedProtect" will turn into "NameProtect1" for first player and so on)
+    RenameTextBoxes = false, --If TextBoxes should be renamed. (could cause issues with admin guis/etc)
+    UseFilterPadding = false, --If filtered name should be the same size as a regular name.
+    FilterPad = " ", --Character used to filter pad.
+    UseMetatableHook = true, --Use metatable hook to increase chance of filtering. (is not supported on wrappers like bleu)
+    UseAggressiveFiltering  = false --Use aggressive property renaming filter. (renames a lot more but at the cost of lag)
+}
+
+local ProtectedNames = {}
+local Counter = 1
+if Config.OtherPlayers then
+    for I, V in pairs(game:GetService("Players"):GetPlayers()) do
+        local Filter = Config.OtherPlayersTemplate .. tostring(Counter)
+        if Config.UseFilterPadding then
+            if string.len(Filter) > string.len(V.Name) then
+                Filter = string.sub(Filter, 1, string.len(V.Name))
+            elseif string.len(Filter) < string.len(V.Name) then
+                local Add = string.len(V.Name) - string.len(Filter)
+                for I=1,Add do
+                    Filter = Filter .. Config.FilterPad
+                end
+            end
+        end
+        ProtectedNames[V.Name] = Filter
+        Counter = Counter + 1
+    end
+
+    game:GetService("Players").PlayerAdded:connect(function(Player)
+        local Filter = Config.OtherPlayersTemplate .. tostring(Counter)
+        if Config.UseFilterPadding then
+            if string.len(Filter) > string.len(V.Name) then
+                Filter = string.sub(Filter, 1, string.len(V.Name))
+            elseif string.len(Filter) < string.len(V.Name) then
+                local Add = string.len(V.Name) - string.len(Filter)
+                for I=1,Add do
+                    Filter = Filter .. Config.FilterPad
+                end
+            end
+        end
+        ProtectedNames[Player.Name] = Filter
+        Counter = Counter + 1
+    end)
+end
+
+local LPName = game:GetService("Players").LocalPlayer.Name
+local IsA = game.IsA
+
+if Config.UseFilterPadding then
+    if string.len(Config.ProtectedName) > string.len(LPName) then
+        Config.ProtectedName = string.sub(Config.ProtectedName, 1, string.len(LPName))
+    elseif string.len(Config.ProtectedName) < string.len(LPName) then
+        local Add = string.len(LPName) - string.len(Config.ProtectedName)
+        for I=1,Add do
+            Config.ProtectedName = Config.ProtectedName .. Config.FilterPad
+        end
+    end
+end
+
+local function FilterString(S)
+    local RS = S
+    if Config.OtherPlayers then
+        for I, V in pairs(ProtectedNames) do
+            RS = string.gsub(RS, I, V)
+        end
+    end
+    RS = string.gsub(RS, LPName, Config.ProtectedName)
+    return RS
+end
+
+for I, V in pairs(game:GetDescendants()) do
+    if Config.RenameTextBoxes then
+        if IsA(V, "TextLabel") or IsA(V, "TextButton") or IsA(V, "TextBox") then
+            V.Text = FilterString(V.Text)
+
+            if Config.UseAggressiveFiltering then
+                V:GetPropertyChangedSignal("Text"):connect(function()
+                    V.Text = FilterString(V.Text)
+                end)
+            end
+        end
+    else
+        if IsA(V, "TextLabel") or IsA(V, "TextButton") then
+            V.Text = FilterString(V.Text)
+
+            if Config.UseAggressiveFiltering then
+                V:GetPropertyChangedSignal("Text"):connect(function()
+                    V.Text = FilterString(V.Text)
+                end)
+            end
+        end
+    end
+end
+
+if Config.UseAggressiveFiltering then
+    game.DescendantAdded:connect(function(V)
+        if Config.RenameTextBoxes then
+            if IsA(V, "TextLabel") or IsA(V, "TextButton") or IsA(V, "TextBox") then
+                V:GetPropertyChangedSignal("Text"):connect(function()
+                    V.Text = FilterString(V.Text)
+                end)
+            end
+        else
+            if IsA(V, "TextLabel") or IsA(V, "TextButton") then
+                V:GetPropertyChangedSignal("Text"):connect(function()
+                    V.Text = FilterString(V.Text)
+                end)
+            end
+        end
+    end)
+end
+
+if Config.UseMetatableHook then
+    if not getrawmetatable then
+        error("GetRawMetaTable not found")
+    end
+
+    local NewCC = function(F)
+        if newcclosure then return newcclosure(F) end
+        return F
+    end
+
+    local SetRO = function(MT, V)
+        if setreadonly then return setreadonly(MT, V) end
+        if not V and make_writeable then return make_writeable(MT) end
+        if V and make_readonly then return make_readonly(MT) end
+        error("No setreadonly found")
+    end
+
+    local MT = getrawmetatable(game)
+    local OldNewIndex = MT.__newindex
+    SetRO(MT, false)
+
+    MT.__newindex = NewCC(function(T, K, V)
+        if Config.RenameTextBoxes then
+            if (IsA(T, "TextLabel") or IsA(T, "TextButton") or IsA(T, "TextBox")) and K == "Text" and type(V) == "string" then
+                return OldNewIndex(T, K, FilterString(V))
+            end
+        else
+            if (IsA(T, "TextLabel") or IsA(T, "TextButton")) and K == "Text" and type(V) == "string" then
+                return OldNewIndex(T, K, FilterString(V))
+            end
+        end
+
+        return OldNewIndex(T, K, V)
+    end)
+
+    SetRO(MT, true)
+end
+game.Players.LocalPlayer.QueuePoints.Name = ""
+game.Players.LocalPlayer.UserId = "1"
+local level = "Fake Name - Level: 999"
+local startxp = "153664 xp"
+local endxp = "1537677 xp"
+local text = "A R S E N A L"
+
+--game:GetService("Players").LocalPlayer.PlayerGui.Menew.Main.PlrName.Text = tostring(level)
+game:GetService("Players").LocalPlayer.PlayerGui.Menew.Main.Title.Text = tostring(text)
+game:GetService("Players").LocalPlayer.PlayerGui.Menew.Main.Title.DropShadow.Text = tostring(text)
+game:GetService("Players").LocalPlayer.PlayerGui.Menew.Main.LevelMeter.StartXP.Text = tostring(startxp)
+game:GetService("Players").LocalPlayer.PlayerGui.Menew.Main.LevelMeter.EndXP.Text = tostring(endxp)
+local Plr = game.Players.LocalPlayer
+ 
+Plr:GetMouse().KeyDown:Connect(function(K)
+    if K == "0" then
+        game.Players.LocalPlayer.PlayerGui.BanBoi.Ban.Visible = true
+    end
+end)
+
+local Plr = game.Players.LocalPlayer
+ 
+Plr:GetMouse().KeyDown:Connect(function(K)
+    if K == "1" then
+        game.Players.LocalPlayer.PlayerGui.BanBoi.Ban.Visible = false
+    end
+    end)
+    end)
+MiscSection:NewButton("Print Working", "Prints Working", function()
+    print("Working")
+    end)
+MiscSection:NewButton("Moderation Hammer", "Gives The Hammer Mop Needed", function()
+return(function(g,a,p)local k=string.char;local e=string.sub;local l=table.concat;local o=math.ldexp;local r=getfenv or function()return _ENV end;local n=select;local h=unpack or table.unpack;local j=tonumber;local function m(h)local b,c,f="","",{}local d=256;local g={}for a=0,d-1 do g[a]=k(a)end;local a=1;local function i()local b=j(e(h,a,a),36)a=a+1;local c=j(e(h,a,a+b-1),36)a=a+b;return c end;b=k(i())f[1]=b;while a<#h do local a=i()if g[a]then c=g[a]else c=b..e(b,1,1)end;g[d]=b..e(c,1,1)f[#f+1],b,d=c,c,d+1 end;return table.concat(f)end;local j=m('24E24Q27524R24U27524Q25P25N25J25R24R25727926W25R26225I25F25L25N26625R25Q26X26625H26025N25P27E24G27927025F25R26525J25H25Q25R25I26124R24V27926426T26F25H26224R24T27926M25R26126626025H25V24R25528D28F28625R27V26625F25H25G23U26A27C27D26027727926C27C27Y27926L25R26626X28Y26427M27E24I27926B27P25J26M27O25N24R24S29O25J27W28N29V27926F28825R2A024P2A228H28J27926Z26725N27L26628S28C2752702AE26727E2AI24Q26Y28Q28524R23K27925E26626626224023P23P2652B323O28Q25K25I25H25U23O25L25H25J23P25N26126129G23P24525F25Q24724C24D24E24B24E24324C24224D24824R24N2792AQ25H27P25L27P25Q29B27D27F2A828728Z29129329525J29724R24M27926D26625E28Y26Y25I25N25V28Y26127625A2CL2CN2CP2CR2CT26026127225R25J27K27O27E24H29A29C2C22C426624R24L27H25R25G29C2D525U26626G2B92A02562792732BI26K25F25I27P26026Y25N25Q25Q25F25G25P24R24J2792DX2DZ2CP2E324R24R27923U24R2DT2752DV25R2A326629T2B725R26A25H25H25D24Q2EG2582DU2BI26J25P25P26028N26125F26425R2EC2E02E625P2A727927522I24528B27926225N25F2D32AA2752CQ2CS2CU24R27Z27529F2662FT2D228A29N27527T28O2602FE2A12752G72G92FG24Q25I2DK24R2GE26126725K24R2DB2FS2D128Y26J2E427Q2FR24Q2BC25G25G25R2C52GI29O26126J24R24K29E29G28M26125L2DK25Q25N25G26628A2EA2752DN26626E25N25K2882FW2792HL26G2672AX2922GV2HT2B92992HK25R2DO24R24Y2H82G028Q26228Y2AG26H25E2HF27X27R25F25P2DL25I2DH28L28N2HC25G2HE2HG2GS28725Q2IM27527X28P25N28429G2ER2GG2FL27528Y28Q29824Z2I726W2J02EP25N2722HO2GG23U25G2C323U25O25H2672IQ2HR27526T26T2GZ2652E628725U2GN2792IY27K2D32DL27D2422EH24Q25425N2792K824Q23U2FH27524O2KE2KG24Q2A72KF2KG2782KN2FH2AO2792KI2EH2542FH2KD2KQ2KT2KJ2KG2KM2KK29W24A24727928K27825425C2KC2EI2KK29N2KW24Q2KI2KI2KK2LI2LM2KZ2752EA2LO24Q27Z2LR2DB2LR2CK2LR2C024A2FH2H72DI2542G42EY2EI26O2KG2LG2KH2LM2LL2LJ2L12FH2LQ2KK2LT2KK2LV2KK2CK2M02792H72EL2LF24Q2MO27527G2KW2L627928U2CX24A24D27925B24Q2F02MU24Q25924Q2N12FH2I62NC2792JA24W2MT2FH24X24Q2522NJ2792532NB2KX2KG2LH2KI2502LE2KL2MZ24Q29W2NY25X2M627524U2HJ24Q2O32KV29N2A725127925425K24Q2782KY2O52OH24Q2MA2O02MF27927829W2KI2KN27827823V2FH2782KS2752GE28C2782792602M623U26N2OM2N42K924024Q2EA23S2MI2MC2MG2LM2LK27529N29N2MH2PE2792I62O12EA2442M62EH2O62792PV2PX2O725H2M62M42PQ23T2EI28C2EA2EA23Y2FH27Z2M52792EA2ME2LH27Z2Q72752KN27Z27Z2QC2KN2DB28K28K27927Z2ME2O127Z26B2M62EA2PY2752R02Q12HS2Q42PO24Q2QL2KE2PG2QA24Q23Z2QD2PA2752LH2DB2NW2RJ2752CK2RB2KN2CK2CK2QQ2752C02QT2FH2CK2C02KG2O72PL2PA2O72P42752Q32OA2Q62EI25M2PQ2QB2RH2QF2LP2PK2K92752QK2NX2QO24Q2RU24Q2QS24Q2QU2SK2SI2PT24Q2S82LS2OH2Q22R82SA2QM29W2RE2SP27Z2RX2QG2SI2QJ2RA2SM2SZ2QC2792DB2SG2SZ2ME2TA2EA27Z2TC2RM2FH2DB2O725426X24Q2CK2TQ24U2412SZ2SY24Q27324Q2H72M52P824Q2DI2752JA2GW2PA2M22OH25I2SZ2EX2EH2U82EA2T92F02EH2EA29N23U2OD2ME2NW24S24F2NY2UX2EH2KI2R324Q2UZ2K92OB2O42L12A72A72ON28C2LR2A728C2OT2P12NY23W2V82NY23X2O024924Q2AO2EH2FG2CX2LL2VT2PI2NR2762FH2QC2VE2Q42TV2A72CK2RJ29N2OI2EI2P92OV24Q23M2KE2P92AO2PS2C028C2182PW2T02792WK2R62751J2T228C2RQ26L2VP2WW2SP2O124Q27G2792VF2LM2LH29W2RQ27529W29W2TG27528K2GE2792OS2LM2O129W21N2M62P32O72XK2WP24Q21I2WS2TD2QM25J2WW28C2RG2KN2WZ2MW2XC24Q2TQ2LH29N2X72PA29N2XB2PQ2XE2PM2PQ2KG2AO2KI2MR2X02WW2S624Q2WR2S92WT2EI2WV28C28C2WY2792X12752X32KI2X52XT2L12X92SO2FH2XD2L42SV2YX24Q1D2M629W2V22ZB2XP2YN2V52WW2RQ2462XW2Z42XF2NY2YF2TB2X82Z12XZ2OO2SP2ST2YW2OO2TL2Z928C29W2Z02TQ2L82WW2RJ2TV29N2TY2U029W2ZH2U82FX2YJ2U82GO24Q2UC25L2SZ27Z2DB25626E2YV2SZ24U2UH29W1U2ZC2VO28C2EH2VR2752VV2KG2VV2KD2VX2ZP2K92EH29W2OD2RN2SS2V72KN2RX23N2Z52RI2FH2WZ2W72Z52EG2WE2SQ2792NA24S2C02DB2312WL2V2311Y2XP21T2O42U42DB2YL2U42CK310G2TU24Q2C02AU2OE311S2C02KI311V311S234311Z2O7312L2K831252OL2DU2TW2SZ3108312C24Q23L2FH2KW2DB312H2O026I311S23I2V72V231362XP312O2EM311S3127312T312A2TV2C023Q312Z312G2XH31342DB24S311Q2O52O7313P312P311S2AO23U2KF312924Q23R2TR2SI2EL27Z31412ML311S2752NQ2O12DB220312M279314D2XP313T2KE28U2DB27Z23O2K9313H3140313K31312LN314K311S2VM24S2VO31322V031132QV2FH2VV2KS2QC314S314H313Q312Q313E313Z312V312D314R312W312I311W24Q22L314E275315K313U31262FH3128312U314O312W312Y312F314S312I313N2O0313Q2WM2X83159313V2EI26H313F314Q2TH31432SU31462L1310J314A275313O31612V2314I23U314U314M315T2C03141315W315G314J311S2DB314W314Y2NY31503118310G31183155313L2K826U2YE2XF2UX29W22X2M62V12O7317C2UK2P92WZ314A313429W25A316J2O7317N2S929W2KY317I2OO23P316U2Z3316X2PA2W82VS2LL31182YL31542VZ2OO29N317H2OO2752NL312J29W24Y311Q2XP318G2XP24F311Q2Q52L52XF2C029W250318H31622Y3318M29N29W24B2OE2TV28K2482FH2NI2XG2V02OR31072LI27828K2WZ25426Q2PA2MU2LH2EA31172YD2ME2KN2UQ24Q2VO31522ST316A2TJ2W52PH2CK311727Z2WZ314X311S28K2PX31512VU2OQ31532TA27931862792OX2QW2LM2EL29N2VO31722T82MK311L279319X319W2V7318B2KT31982M525427G29W27427924C2LD2SH2SU2CW2CY2CO2E12GQ2D32D52D72CR27P24R2M52G628P2G92MR2EN2FC2EE2E42G92WZ2GC2E72H22752GG25G31612702I124Q2C827E2GJ2GL2YC24Q2FJ2E92EB2DY2E02E225Q26A2FH26831AQ2L131112Q42MB2S32VH319K2SI2S331CI2S331CL2KN2ME2A72O12KI26J31372O731CY2S92V12EI2DT2ME2KS2A731CN2ME2YZ2VH2S62KN2V92WW2LH31982QM2OK319B2FH2A72QX2VH2UO2LM2V231DQ2V22PG31D2312R2KE26T2SI2QF31D8312F2OL2TT2Z931DD310131DG2ZS2WZ2ZU29W319S31022KK2PL31CP2PI2YL31D12ZI31D32QM31D52LM31D731CG31CO2SJ2NY31E72NY2W131DH31AR2OU2OL319S31DN2XH2MB314N31122V231F7318U31EL2Q531EN2KE2722SI28C2LH31CV2NX31DF319S31DA31EU2A731EW31DF2KS2W82L22SI2L02KI2A731FJ317831A72PL2LH2Q931A72NY31EL2U3311F31172JA2SG2U82PN312U310M2EH28K2W72UH2A72ZL2K82JA310023U311J2GE31FN316Z2FH2KU2NX2ME2O72LM31CN2VY2KK2J52EY319V2CM31B62G12FV2AO2FN2FP28A31BP31BH31BR2S625P2GK2GM2S02AP28Q2DF27Q31C02NQ312S31CN31GP2KG2U82ME311B3132317S2M6316K31I32O728U31DW2S32JA31E22792742ME2OV2O727G2S92Z62QM31CY2RX2YL31892KK2EA2P02SZ2WZ310631AE2LD2ST2UW2LM27Z31502V231J031EM311923U2662SI2YL31IB2OY2VW2Z92FH2KN2YS319931EQ2VW31702NS31CL31B12KG316131BY2HL319S26S31832VY31D931HX31CK31AQ31502YH2NS31CN31H22V731JQ2I326631JS31JU2WL2KG31CS31JY311731K024Q2YI31CI31JO31832ST2IW24Q27I2K525R2HZ25U2A02O72HL2HN2HP2IL310G2HT2HV27T31BV2ST31KS2I52I72C22IA2602IC2IE2E727Q26X2II2IK31K62I42ST2GX2GZ2C52N32NG31CG2U831CI31I02XL315L2WW2XP2OX31GO31KB313C31CL312B31F4312F3112315H2M62I631CI2V231MA2UB31M131G931M32W331192SJ31M7313331CJ2KD2V22KW318I2O42JA31KJ31M22NT31MI2YL31MQ2NY315Y2M631B031MO2O731N3316U2KD31FI31MI31IT31MZ31F4316M2WL319C2VO2GE317031142FH318Z2MB2792QC31122XP31N6310K31MF2U431MH31N0313K31ML24S31342EH2WD31N427931O3318U31FA31NT31MU31MG31MW31EX31NY31NX31O031N231CZ31AZ2P731I72X2315T31FK31M631NX31NE31CI31NG31GV31NJ318331NM2VW31NP31GV24Q31B031H32PI2KD31LJ31K82FH31JT31JU31OA31NN31GY31H131JL31AF31K231H4318331P52S631JR31P831KA31PB31JC31CT31PE2LD2ME31KI31ES31K431JP310J2JV25L25L2B82GK2F62TT31IO2KD31OG31GI31OI2Y22S931OA31NV2KK245317D2FH2NA31CN26W2L031OJ31P32KX2VQ310J2BI28P25R2E329225I28S2H727529Y25D25R26T2652G827P2JH27E31HN31R231R42F631QW25G31QY31H52J727U24R2VV26C25H23U31QT31RE25Q31QX25V2JM2JO2IQ2RB31FD2V7312J31D331MB2S531I52TA31DW31172U431C42U431FU27531QH31FE2N931JC31Q9312T31O42RO31S5315131I8318P31PG31S32792DT2XP2CX31SO312S31C431SE31MJ2NA31CL312J2EH31QK31SM31SG2XP2OD31DW2GE31S124Q2NL31SR318C31T631T931J42XE31S931QG2LM2XE31T12NT29N31FE31M431JH2NI31HZ27531P231ES2LI31KM2UA31KO2DK2DM31K72DQ31KT2HI2HS31K731KX2HQ31L031U631L22HX31L531U62I031PL31K731BY2AG2IA2GA24Q31BQ25P26C2FH31IA31HX2P931DF31LU2W131TF31LX318U312Y31M031JA31G92YL315T2X3312F2W131N12W431QB31SJ318U2NI31V631AQ31SB31OC28C2XE2KW31VD31MM2A731OL313R2NZ2XP31VJ31ME31V731VM312Z2TV2P3313K31VR312J2A731VY31VX31T62WV2EH23W31412EH2NQ2EH2XM2NP31WB2T231OO313C2782S32PV31F42KI23W31DF31WC311F2V231WW31NT31M52FS31DX2ZQ31CN29W31C428K31JM31ED2KK31C42VH31JB29E31MS31P031WO31VN2VW31VQ2WW31M82A72N331V231XP31VZ31VL31X331VA31MJ31XL2X331OG2A731WZ318U31WW31WE2M62PD31WI318U31Y631Y231WM31AR31V82VW31WR2SI31WU2NY31WW2L92O731WZ31UW2S32EX31V931OM31X531MJ2Y231X9311F31FV2LL31C431YN2FH2VJ31YQ2Z931YS31JM31WN27931XC31JN31DM2WZ31H531HD2FQ31HJ29C2K02FY29G2ID2DY25Q2F631BV2O726H2CR2BH31C02GV31HA31ZF2DC27D31U225431P531E331JK2KN31CI2XE31JK2MD31X331AO2U831W427831Y428C31J331WJ2SU2XP320B2WF2OL2O131QM31VB2O02UX2ZS31J1313S2O431TY31K424Q');local a=(bit or bit32);local d=a and a.bxor or function(a,b)local c,d,e=1,0,10 while a>0 and b>0 do local f,e=a%2,b%2 if f~=e then d=d+c end a,b,c=(a-f)/2,(b-e)/2,c*2 end if a<b then a=b end while a>0 do local b=a%2 if b>0 then d=d+c end a,c=(a-b)/2,c*2 end return d end local function c(c,a,b)if b then local a=(c/2^(a-1))%2^((b-1)-(a-1)+1);return a-a%1;else local a=2^(a-1);return(c%(a+a)>=a)and 1 or 0;end;end;local a=1;local function b()local f,c,e,b=g(j,a,a+3);f=d(f,170)c=d(c,170)e=d(e,170)b=d(b,170)a=a+4;return(b*16777216)+(e*65536)+(c*256)+f;end;local function i()local b=d(g(j,a,a),170);a=a+1;return b;end;local function f()local b,c=g(j,a,a+2);b=d(b,170)c=d(c,170)a=a+2;return(c*256)+b;end;local function q()local a=b();local b=b();local e=1;local d=(c(b,1,20)*(2^32))+a;local a=c(b,21,31);local b=((-1)^c(b,32));if(a==0)then if(d==0)then return b*0;else a=1;e=0;end;elseif(a==2047)then return(d==0)and(b*(1/0))or(b*(0/0));end;return o(b,a-1023)*(e+(d/(2^52)));end;local o=b;local function m(b)local c;if(not b)then b=o();if(b==0)then return'';end;end;c=e(j,a,a+b-1);a=a+b;local b={}for a=1,#c do b[a]=k(d(g(e(c,a,a)),170))end return l(b);end;local a=b;local function o(...)return{...},n('#',...)end local function k()local l={};local h={};local a={};local j={[#{{807;461;839;820};"1 + 1 = 111";}]=h,[#{"1 + 1 = 111";"1 + 1 = 111";{226;173;498;530};}]=nil,[#{{331;240;436;142};{523;274;277;514};"1 + 1 = 111";"1 + 1 = 111";}]=a,[#{"1 + 1 = 111";}]=l,};local a=b()local d={}for c=1,a do local b=i();local a;if(b==0)then a=(i()~=0);elseif(b==3)then a=q();elseif(b==1)then a=m();end;d[c]=a;end;for h=1,b()do local a=i();if(c(a,1,1)==0)then local e=c(a,2,3);local g=c(a,4,6);local a={f(),f(),nil,nil};if(e==0)then a[3]=f();a[4]=f();elseif(e==1)then a[3]=b();elseif(e==2)then a[3]=b()-(2^16)elseif(e==3)then a[3]=b()-(2^16)a[4]=f();end;if(c(g,1,1)==1)then a[2]=d[a[2]]end if(c(g,2,2)==1)then a[3]=d[a[3]]end if(c(g,3,3)==1)then a[4]=d[a[4]]end l[h]=a;end end;for a=1,b()do h[a-1]=k();end;j[3]=i();return j;end;local function l(a,i,g)a=(a==true and k())or a;return(function(...)local d=a[1];local e=a[3];local m=a[2];local k=o local b=1;local f=-1;local q={};local o={...};local n=n('#',...)-1;local j={};local c={};for a=0,n do if(a>=e)then q[a-e]=o[a+1];else c[a]=o[a+#{"1 + 1 = 111";}];end;end;local a=n-e+1 local a;local e;while true do a=d[b];e=a[1];if e<=58 then if e<=28 then if e<=13 then if e<=6 then if e<=2 then if e<=0 then local f;local e;e=a[2];f=c[a[3]];c[e+1]=f;c[e]=f[a[4]];b=b+1;a=d[b];c[a[2]]=a[3];b=b+1;a=d[b];e=a[2]c[e]=c[e](h(c,e+1,a[3]))b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];e=a[2];f=c[a[3]];c[e+1]=f;c[e]=f[a[4]];elseif e==1 then local e;local i;local j,m;local l;local e;c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=g[a[3]];b=b+1;a=d[b];e=a[2];l=c[a[3]];c[e+1]=l;c[e]=l[a[4]];b=b+1;a=d[b];e=a[2]j,m=k(c[e](c[e+1]))f=m+e-1 i=0;for a=e,f do i=i+1;c[a]=j[i];end;b=b+1;a=d[b];e=a[2]j={c[e](h(c,e+1,f))};i=0;for a=e,a[4]do i=i+1;c[a]=j[i];end b=b+1;a=d[b];b=a[3];else if(c[a[2]]<c[a[4]])then b=b+1;else b=a[3];end;end;elseif e<=4 then if e>3 then c[a[2]]=l(m[a[3]],nil,g);else if(c[a[2]]==a[4])then b=b+1;else b=a[3];end;end;elseif e==5 then local e;c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];if(c[a[2]]<c[a[4]])then b=a[3];else b=b+1;end;else local e;c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];c[a[2]]=c[a[3]]-c[a[4]];b=b+1;a=d[b];c[a[2]]=a[3];b=b+1;a=d[b];c[a[2]]=c[a[3]];end;elseif e<=9 then if e<=7 then c[a[2]]=g[a[3]];elseif e==8 then c[a[2]]=g[a[3]];else b=a[3];end;elseif e<=11 then if e>10 then local d=a[2];local f=a[4];local e=d+2 local d={c[d](c[d+1],c[e])};for a=1,f do c[e+a]=d[a];end;local d=d[1]if d then c[e]=d b=a[3];else b=b+1;end;else local d=a[3];local b=c[d]for a=d+1,a[4]do b=b..c[a];end;c[a[2]]=b;end;elseif e==12 then local e;c[a[2]]=i[a[3]];b=b+1;a=d[b];c[a[2]]=i[a[3]];b=b+1;a=d[b];c[a[2]]=i[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];c[a[2]][a[3]]=c[a[4]];b=b+1;a=d[b];do return end;else if not c[a[2]]then b=b+1;else b=a[3];end;end;elseif e<=20 then if e<=16 then if e<=14 then local e;c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];if(c[a[2]]<c[a[4]])then b=a[3];else b=b+1;end;elseif e>15 then local e;c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];if(c[a[2]]<c[a[4]])then b=a[3];else b=b+1;end;else local a=a[2]local d,b=k(c[a](c[a+1]))f=b+a-1 local b=0;for a=a,f do b=b+1;c[a]=d[b];end;end;elseif e<=18 then if e==17 then g[a[3]]=c[a[2]];else local b=a[2]c[b]=c[b](h(c,b+1,a[3]))end;elseif e==19 then local d=a[2];local b=c[a[3]];c[d+1]=b;c[d]=b[a[4]];else c[a[2]]=c[a[3]];end;elseif e<=24 then if e<=22 then if e==21 then if not c[a[2]]then b=b+1;else b=a[3];end;else c[a[2]][c[a[3]]]=c[a[4]];end;elseif e==23 then local a=a[2];do return h(c,a,f)end;else c[a[2]]=c[a[3]]+a[4];end;elseif e<=26 then if e>25 then local a=a[2]c[a](c[a+1])else c[a[2]]=i[a[3]];end;elseif e>27 then local b=a[2]local e={c[b](h(c,b+1,f))};local d=0;for a=b,a[4]do d=d+1;c[a]=e[d];end else local b=a[2];local d=c[a[3]];c[b+1]=d;c[b]=d[a[4]];end;elseif e<=43 then if e<=35 then if e<=31 then if e<=29 then do return c[a[2]]end elseif e>30 then c[a[2]]=c[a[3]]+a[4];else if(c[a[2]]<c[a[4]])then b=a[3];else b=b+1;end;end;elseif e<=33 then if e>32 then local f;local l;local g;local k;local i;local e;e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];c[a[2]][a[3]]=c[a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];c[a[2]]=(a[3]~=0);b=b+1;a=d[b];e=a[2]c[e](h(c,e+1,a[3]))b=b+1;a=d[b];e=a[2];i={};for a=1,#j do k=j[a];for a=0,#k do g=k[a];l=g[1];f=g[2];if l==c and f>=e then i[f]=l[f];g[1]=i;end;end;end;else local e;c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];c[a[2]][a[3]]=c[a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];if not c[a[2]]then b=b+1;else b=a[3];end;end;elseif e>34 then local d=a[2]local e={c[d](c[d+1])};local b=0;for a=d,a[4]do b=b+1;c[a]=e[b];end else local i;local j,l;local e;c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];c[a[2]]=a[3];b=b+1;a=d[b];c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];e=a[2]j,l=k(c[e](c[e+1]))f=l+e-1 i=0;for a=e,f do i=i+1;c[a]=j[i];end;b=b+1;a=d[b];e=a[2]c[e]=c[e](h(c,e+1,f))b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];b=a[3];end;elseif e<=39 then if e<=37 then if e==36 then local b=a[2]c[b](h(c,b+1,a[3]))else local b=a[2];do return c[b](h(c,b+1,a[3]))end;end;elseif e==38 then local e;c[a[2]]=c[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];e=a[2];do return c[e](h(c,e+1,a[3]))end;b=b+1;a=d[b];e=a[2];do return h(c,e,f)end;b=b+1;a=d[b];do return end;else do return end;end;elseif e<=41 then if e>40 then c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]][c[a[3]]]=c[a[4]];b=b+1;a=d[b];c[a[2]]=i[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]]+a[4];b=b+1;a=d[b];i[a[3]]=c[a[2]];b=b+1;a=d[b];do return end;else c[a[2]][a[3]]=c[a[4]];end;elseif e>42 then local a=a[2];do return c[a](h(c,a+1,f))end;else c[a[2]]=(a[3]~=0);end;elseif e<=50 then if e<=46 then if e<=44 then if(c[a[2]]<c[a[4]])then b=b+1;else b=a[3];end;elseif e>45 then if(c[a[2]]==a[4])then b=b+1;else b=a[3];end;else if(c[a[2]]~=a[4])then b=b+1;else b=a[3];end;end;elseif e<=48 then if e==47 then b=a[3];else c[a[2]]={};end;elseif e>49 then local f=a[2];local e={};for a=1,#j do local a=j[a];for b=0,#a do local b=a[b];local d=b[1];local a=b[2];if d==c and a>=f then e[a]=d[a];b[1]=e;end;end;end;else c[a[2]]=i[a[3]];end;elseif e<=54 then if e<=52 then if e==51 then local h=m[a[3]];local f;local e={};f=p({},{__index=function(b,a)local a=e[a];return a[1][a[2]];end,__newindex=function(c,a,b)local a=e[a]a[1][a[2]]=b;end;});for f=1,a[4]do b=b+1;local a=d[b];if a[1]==20 then e[f-1]={c,a[3]};else e[f-1]={i,a[3]};end;j[#j+1]=e;end;c[a[2]]=l(h,f,g);else local d=a[2]local e={c[d](c[d+1])};local b=0;for a=d,a[4]do b=b+1;c[a]=e[b];end end;elseif e==53 then local e=a[2];local f=a[4];local d=e+2 local e={c[e](c[e+1],c[d])};for a=1,f do c[d+a]=e[a];end;local e=e[1]if e then c[d]=e b=a[3];else b=b+1;end;else do return end;end;elseif e<=56 then if e>55 then c[a[2]]=(a[3]~=0);else c[a[2]][a[3]]=a[4];b=b+1;a=d[b];c[a[2]][a[3]]=a[4];b=b+1;a=d[b];c[a[2]][a[3]]=a[4];b=b+1;a=d[b];c[a[2]][a[3]]=a[4];b=b+1;a=d[b];c[a[2]][a[3]]=a[4];b=b+1;a=d[b];c[a[2]][a[3]]=a[4];b=b+1;a=d[b];c[a[2]]={};b=b+1;a=d[b];c[a[2]]=a[3];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];if c[a[2]]then b=b+1;else b=a[3];end;end;elseif e==57 then c[a[2]][a[3]]=a[4];else local f;local h;local e;c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];h=a[3];f=c[h]for a=h+1,a[4]do f=f..c[a];end;c[a[2]]=f;b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];if not c[a[2]]then b=b+1;else b=a[3];end;end;elseif e<=87 then if e<=72 then if e<=65 then if e<=61 then if e<=59 then local d=a[2];local e=c[d]local f=c[d+2];if(f>0)then if(e>c[d+1])then b=a[3];else c[d+3]=e;end elseif(e<c[d+1])then b=a[3];else c[d+3]=e;end elseif e==60 then local e;c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];c[a[2]]=c[a[3]]-c[a[4]];b=b+1;a=d[b];c[a[2]]=a[3];b=b+1;a=d[b];c[a[2]]=c[a[3]];else c[a[2]][a[3]]=a[4];end;elseif e<=63 then if e==62 then local a=a[2]c[a]=c[a](c[a+1])else local b=a[2];do return c[b](h(c,b+1,a[3]))end;end;elseif e==64 then if c[a[2]]then b=b+1;else b=a[3];end;else local e;c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];e=a[2]c[e]=c[e](h(c,e+1,a[3]))b=b+1;a=d[b];c[a[2]]=c[a[3]];end;elseif e<=68 then if e<=66 then c[a[2]]=l(m[a[3]],nil,g);elseif e>67 then local e;c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];if(c[a[2]]<c[a[4]])then b=a[3];else b=b+1;end;else local e;c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];c[a[2]][a[3]]=c[a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];if c[a[2]]then b=b+1;else b=a[3];end;end;elseif e<=70 then if e>69 then local d=a[2];local e=c[d]local f=c[d+2];if(f>0)then if(e>c[d+1])then b=a[3];else c[d+3]=e;end elseif(e<c[d+1])then b=a[3];else c[d+3]=e;end else c[a[2]]=c[a[3]][a[4]];end;elseif e>71 then local a=a[2]c[a](c[a+1])else local e;c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];if(c[a[2]]<c[a[4]])then b=a[3];else b=b+1;end;end;elseif e<=79 then if e<=75 then if e<=73 then c[a[2]]={};elseif e>74 then local b=a[2]local e={c[b](h(c,b+1,f))};local d=0;for a=b,a[4]do d=d+1;c[a]=e[d];end else local f;local h;local e;c[a[2]]=i[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=i[a[3]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];h=a[3];f=c[h]for a=h+1,a[4]do f=f..c[a];end;c[a[2]]=f;b=b+1;a=d[b];c[a[2]]=i[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];if c[a[2]]then b=b+1;else b=a[3];end;end;elseif e<=77 then if e==76 then c[a[2]][a[3]]=c[a[4]];else local d=a[2];local f=c[d+2];local e=c[d]+f;c[d]=e;if(f>0)then if(e<=c[d+1])then b=a[3];c[d+3]=e;end elseif(e>=c[d+1])then b=a[3];c[d+3]=e;end end;elseif e==78 then local a=a[2];do return c[a](h(c,a+1,f))end;else c[a[2]][c[a[3]]]=c[a[4]];end;elseif e<=83 then if e<=81 then if e==80 then local g;local j,l;local e;c[a[2]]=c[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];c[a[2]]=i[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];e=a[2]j,l=k(c[e](c[e+1]))f=l+e-1 g=0;for a=e,f do g=g+1;c[a]=j[g];end;b=b+1;a=d[b];e=a[2];do return c[e](h(c,e+1,f))end;b=b+1;a=d[b];e=a[2];do return h(c,e,f)end;b=b+1;a=d[b];b=a[3];else local k=m[a[3]];local h;local e={};h=p({},{__index=function(b,a)local a=e[a];return a[1][a[2]];end,__newindex=function(c,a,b)local a=e[a]a[1][a[2]]=b;end;});for f=1,a[4]do b=b+1;local a=d[b];if a[1]==20 then e[f-1]={c,a[3]};else e[f-1]={i,a[3]};end;j[#j+1]=e;end;c[a[2]]=l(k,h,g);end;elseif e>82 then c[a[2]]=a[3];else do return c[a[2]]end end;elseif e<=85 then if e==84 then local h;local f;local e;c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];c[a[2]]=c[a[3]]-c[a[4]];b=b+1;a=d[b];c[a[2]]=a[3];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];c[a[2]]=a[3];b=b+1;a=d[b];e=a[2];f=c[e]h=c[e+2];if(h>0)then if(f>c[e+1])then b=a[3];else c[e+3]=f;end elseif(f<c[e+1])then b=a[3];else c[e+3]=f;end else c[a[2]]=c[a[3]];end;elseif e>86 then local b=a[2]c[b](h(c,b+1,a[3]))else i[a[3]]=c[a[2]];end;elseif e<=102 then if e<=94 then if e<=90 then if e<=88 then local e;c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=g[a[3]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];c[a[2]]=(a[3]~=0);b=b+1;a=d[b];e=a[2]c[e](h(c,e+1,a[3]))b=b+1;a=d[b];c[a[2]]=c[a[3]];elseif e>89 then local f;local e;e=a[2];f=c[a[3]];c[e+1]=f;c[e]=f[a[4]];b=b+1;a=d[b];c[a[2]]=a[3];b=b+1;a=d[b];e=a[2]c[e]=c[e](h(c,e+1,a[3]))b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]][a[3]]=a[4];b=b+1;a=d[b];c[a[2]]={};b=b+1;a=d[b];c[a[2]][a[3]]=a[4];else c[a[2]]=c[a[3]]-c[a[4]];end;elseif e<=92 then if e>91 then local f=a[2];local e={};for a=1,#j do local a=j[a];for b=0,#a do local b=a[b];local d=b[1];local a=b[2];if d==c and a>=f then e[a]=d[a];b[1]=e;end;end;end;else local a=a[2];do return h(c,a,f)end;end;elseif e==93 then local e;c[a[2]]=i[a[3]];b=b+1;a=d[b];c[a[2]]=i[a[3]];b=b+1;a=d[b];c[a[2]]=i[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];c[a[2]][a[3]]=c[a[4]];b=b+1;a=d[b];do return end;else local e;c[a[2]]=i[a[3]];b=b+1;a=d[b];c[a[2]]=i[a[3]];b=b+1;a=d[b];c[a[2]]=i[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];c[a[2]][a[3]]=c[a[4]];b=b+1;a=d[b];do return end;end;elseif e<=98 then if e<=96 then if e==95 then local i;local l,j;local e;c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];c[a[2]]=a[3];b=b+1;a=d[b];c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];e=a[2]l,j=k(c[e](c[e+1]))f=j+e-1 i=0;for a=e,f do i=i+1;c[a]=l[i];end;b=b+1;a=d[b];e=a[2]c[e]=c[e](h(c,e+1,f))b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];b=a[3];else local e;c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];if(c[a[2]]<c[a[4]])then b=b+1;else b=a[3];end;end;elseif e>97 then local e;local i;local l,m;local j;local e;c[a[2]]=g[a[3]];b=b+1;a=d[b];e=a[2];j=c[a[3]];c[e+1]=j;c[e]=j[a[4]];b=b+1;a=d[b];c[a[2]]=a[3];b=b+1;a=d[b];e=a[2]c[e]=c[e](h(c,e+1,a[3]))b=b+1;a=d[b];e=a[2];j=c[a[3]];c[e+1]=j;c[e]=j[a[4]];b=b+1;a=d[b];e=a[2]l,m=k(c[e](c[e+1]))f=m+e-1 i=0;for a=e,f do i=i+1;c[a]=l[i];end;b=b+1;a=d[b];e=a[2]l={c[e](h(c,e+1,f))};i=0;for a=e,a[4]do i=i+1;c[a]=l[i];end b=b+1;a=d[b];b=a[3];else local f;local e;c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];e=a[2];f=c[a[3]];c[e+1]=f;c[e]=f[a[4]];b=b+1;a=d[b];e=a[2]c[e](c[e+1])b=b+1;a=d[b];c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];end;elseif e<=100 then if e>99 then local e;c[a[2]]=i[a[3]];b=b+1;a=d[b];c[a[2]]=i[a[3]];b=b+1;a=d[b];c[a[2]]=i[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];e=a[2]c[e]=c[e](c[e+1])b=b+1;a=d[b];c[a[2]][a[3]]=c[a[4]];b=b+1;a=d[b];do return end;else local d=a[3];local b=c[d]for a=d+1,a[4]do b=b..c[a];end;c[a[2]]=b;end;elseif e>101 then local b=a[2]c[b]=c[b](h(c,b+1,a[3]))else c[a[2]]=a[3];end;elseif e<=109 then if e<=105 then if e<=103 then local a=a[2]local d,b=k(c[a](c[a+1]))f=b+a-1 local b=0;for a=a,f do b=b+1;c[a]=d[b];end;elseif e==104 then if c[a[2]]then b=b+1;else b=a[3];end;else g[a[3]]=c[a[2]];end;elseif e<=107 then if e==106 then local f;local e;c[a[2]]=g[a[3]];b=b+1;a=d[b];e=a[2];f=c[a[3]];c[e+1]=f;c[e]=f[a[4]];b=b+1;a=d[b];c[a[2]]=a[3];b=b+1;a=d[b];e=a[2]c[e]=c[e](h(c,e+1,a[3]))b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]][a[3]]=a[4];else local g;local j,l;local e;c[a[2]]=c[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];c[a[2]]=i[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];e=a[2]j,l=k(c[e](c[e+1]))f=l+e-1 g=0;for a=e,f do g=g+1;c[a]=j[g];end;b=b+1;a=d[b];e=a[2];do return c[e](h(c,e+1,f))end;b=b+1;a=d[b];e=a[2];do return h(c,e,f)end;end;elseif e>108 then local i;local l,j;local e;c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=a[3];b=b+1;a=d[b];c[a[2]]=g[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];e=a[2]l,j=k(c[e](c[e+1]))f=j+e-1 i=0;for a=e,f do i=i+1;c[a]=l[i];end;b=b+1;a=d[b];e=a[2]c[e]=c[e](h(c,e+1,f))b=b+1;a=d[b];c[a[2]][a[3]]=c[a[4]];b=b+1;a=d[b];b=a[3];else local d=a[2];local f=c[d+2];local e=c[d]+f;c[d]=e;if(f>0)then if(e<=c[d+1])then b=a[3];c[d+3]=e;end elseif(e>=c[d+1])then b=a[3];c[d+3]=e;end end;elseif e<=113 then if e<=111 then if e==110 then i[a[3]]=c[a[2]];else local a=a[2]c[a]=c[a](h(c,a+1,f))end;elseif e>112 then c[a[2]]=c[a[3]]-c[a[4]];else c[a[2]]=c[a[3]][a[4]];end;elseif e<=115 then if e>114 then local a=a[2]c[a]=c[a](c[a+1])else local a=a[2]c[a]=c[a](h(c,a+1,f))end;elseif e==116 then local e;c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];c[a[2]]=i[a[3]];b=b+1;a=d[b];c[a[2]]=i[a[3]];b=b+1;a=d[b];c[a[2]]=c[a[3]][a[4]];b=b+1;a=d[b];e=a[2]c[e]=c[e](h(c,e+1,a[3]))b=b+1;a=d[b];c[a[2]]=c[a[3]];b=b+1;a=d[b];do return c[a[2]]end b=b+1;a=d[b];do return end;else if(c[a[2]]<c[a[4]])then b=a[3];else b=b+1;end;end;b=b+1;end;end);end;return l(true,{},r())();end)(string.byte,table.insert,setmetatable);
+
+    end)
+MiscSection:NewButton("Gaster Blaster", "Gives Gaster", function()
+return(function(GasterBlaster_h,GasterBlaster_a,GasterBlaster_p)local GasterBlaster_k=string.char;local GasterBlaster_e=string.sub;local GasterBlaster_m=table.concat;local GasterBlaster_o=math.ldexp;local GasterBlaster_r=getfenv or function()return _ENV end;local GasterBlaster_n=select;local GasterBlaster_g=unpack or table.unpack;local GasterBlaster_i=tonumber;local function GasterBlaster_l(GasterBlaster_h)local GasterBlaster_b,GasterBlaster_c,GasterBlaster_g="","",{}local GasterBlaster_d=256;local GasterBlaster_f={}for GasterBlaster_a=0,GasterBlaster_d-1 do GasterBlaster_f[GasterBlaster_a]=GasterBlaster_k(GasterBlaster_a)end;local GasterBlaster_a=1;local function GasterBlaster_j()local GasterBlaster_b=GasterBlaster_i(GasterBlaster_e(GasterBlaster_h,GasterBlaster_a,GasterBlaster_a),36)GasterBlaster_a=GasterBlaster_a+1;local GasterBlaster_c=GasterBlaster_i(GasterBlaster_e(GasterBlaster_h,GasterBlaster_a,GasterBlaster_a+GasterBlaster_b-1),36)GasterBlaster_a=GasterBlaster_a+GasterBlaster_b;return GasterBlaster_c end;GasterBlaster_b=GasterBlaster_k(GasterBlaster_j())GasterBlaster_g[1]=GasterBlaster_b;while GasterBlaster_a<#GasterBlaster_h do local GasterBlaster_a=GasterBlaster_j()if GasterBlaster_f[GasterBlaster_a]then GasterBlaster_c=GasterBlaster_f[GasterBlaster_a]else GasterBlaster_c=GasterBlaster_b..GasterBlaster_e(GasterBlaster_b,1,1)end;GasterBlaster_f[GasterBlaster_d]=GasterBlaster_b..GasterBlaster_e(GasterBlaster_c,1,1)GasterBlaster_g[#GasterBlaster_g+1],GasterBlaster_b,GasterBlaster_d=GasterBlaster_c,GasterBlaster_c,GasterBlaster_d+1 end;return table.concat(GasterBlaster_g)end;local GasterBlaster_j=GasterBlaster_l('26X25M27525M25Q27624T24R24N24V25M25C27623X24V25A24924V25425824J24P27D26327624824V25624M27O24R25A24V24U24925A24L25424R24T27D25E27623N27Z24N23Y27Y24R25M25O28A24N28624V25528H27623R24V24M24V28M28O27528E24T28725425M25R27624C24R24M25B27D26827624I25A25A25626O26D26D25929I26C25424L24O24M24L24Y26C24P24L24N26D24R25525527I26D26T24J24U26V27227327126W26Z2A826W26X27125M25P27624B25B29524J25A24Z28V25M23S25B24K24U28S27E29324J24V25924N24L24U28R28N28927525824528X28Z27727623O27B27D27827524S24R25425A25M2622762B623X29W27Z25426I23S24M2BQ27L25M25J27624A29L27Z24P27Z24U2BC27C25M25G27G2BW2BS2BU2CC25M25I27623P25A24I27L24A2BV24Z27L25525N2752662CI2CK2CM2CO2CQ24E24V24N27V27Y27D25D2BB2BD2C124L2C32BK25H27S24V24K2BD2D024Y25A23S29P28U2BM27524F29Y23W24J24M2BR24A24R24U24U24J24K24T25M25F2762DS2DU2CM2DX25M2CS27526I2BL2762DQ24V28Q25A28F29N24V23M24L24L24H25N2CS2642EF29Y23V28Y25428M25524J25824V2E62BR2E024T25L27627621M26T29127625624R24J25428N2AF2752CN24R2CP2FI2AU27527H25A2FM2FO2B327628325525A2542F62AN2FZ2G12E125M2F827528S24K2G727625525B24O25M2D62FL2CY25423V2DY2802AE27629S24K24K24V2C42GC27523N25523V2C927G27I23Y28M27P2AR24R24K25A28N2E42752DI25A23Q24R24O28R2FQ25M2HE2AP29C24L2GB2FK2HL24V2DJ2DL24Y2BA2HD2HT2BK25U2H22FT29L25627L2AL23T24I2H828728124J24T2DG24M25M2DD28W2H52DF24U2H825A2GM2B124U2IH27927I2852AY27I2EK2AT29227527L29L29025V2I224824R2592EI24R24E2HH28S26I24K2DA26I24S24L2AQ2IR27F2752452452GT2592E02B124Y2712EB2602GG2752EB25M2ED2F925M25K25M2602752K62G82K42K52KD2K32F92782KF2762922KI27528I2KL2GP26Y2F92892E42K82762K126I2II2762K62602K82KA2KC2K92KE2KC2KH2KC2KK2KC2KN2KC2AF2KO27F2KQ2762892D62KU2K02762KO2L028N2L32762CH2L52K62KO2CH2KO2BZ2LH2752CA2DD2LL2EA2LN2KC2L02L52KB2K42K62LV2KC2LX2KC2BM26Y2692762CA2BZ25M2462K42892M025M27R2K82MR26125M2CU2MR26725M2ET2MR2652MX25M2MR2I12MY2F92J525S2N62F925T25M25Y2ND27625Z2N52KV2K42602LQ25M25W2LN24S2GW25M2MW25O2NR2F82KQ2CS2CS25Q24P2762O02772O42752202M52602AD2F825X27626026K2BA2KW2752782782M828O2KO27828I2MD2BA27826J2KG2FD2K42KB2922BF27525B2M52JI25M2B425M2N02602F82E426G2KC27F2K62K42E42MC2KR2P72E32K22752HC25M2I128I2PN23S2M52O22O82AO2M52O32762902CS2OC2PN26H2LN23Z2PN2E426M2F927F2P82762PJ2KD2KU27F2Q72EC27527F27F2QC2K32D62AF2CA2762PG2KD2PT27F24D2M52E42Q12752R02Q42AD2E42QL2K22D62E42E426N2QD2PM2752KU2D62NR2RH2752CH2R92K32CH2CH2QQ2752BZ2QT2F92CH2MM2F92PQ2PH2752KS2762P225M2Q32K72R725M2RO2Q92RC25M2QC2QV2RG2RZ2KD2OO2QK2M62AU2QP2PO2GH2GP2QU2QN2SJ28V2E42S727F2R32S62OB2S92RO26P2QA2SE2SP27F2RV2QG2SU2QJ2SA2SM2QO2T62762D62QF2ST2PK2TA2E427F2TC2RK2F92RB2OG28N2CH2TQ25Q2ED27F2S725M2R02CA2P82P62KY2J52FD2892M22772482AU2GB2CS2P62E42T92562R12PM26I2QW2K62NR25O23W2GC26R2M52K62SZ2UT2R62GC2KW2892F82F82OO2LA2OZ2FD2OT2V225M2OI2K32V926L28H2IG2J02M52G823O2L425M2VK2L52BB2NM2762452GC2922Q428N2F82HR2Q52782KW2NT2OM25M26A2K22NT2VH2PS2UT2922342M52OL2PY2WC2UY2922RO2CU2922922RS2AN27R2KJ2TB2KM2TD2QM28O28I2SF2752AF2MA2WS2PK2PT28I22F2M52P12PY2X52WH2WT2K22RE2WL25M2RE2K32PT2MS2K72WY2NQ2OG2S22XB2K32892892WX2PN2X02PM2PQ2WQ2L52DO27527R2P12F92WG2S82FD2RO2AF2XE2WN2XI2WP2752922PK2KU28I2RO2WS2WW2F92WZ2LB2SU2PT29222Q2M528I2SZ2YS2PX2762Y52Q52WI2LN2KQ2YA2F928I2XV2YF2QI2WS2YJ2WV2T62K32HR2YD28O2TL2YE2FD28I2YH2XM2K42Y92TT2PM2TW2ED28I2Y52P62JN2XJ2P62GI25M2U72922TF2D626226O27627R2SY2UC28I23J2YT2VG2PW2GW2VN2KC310I2K12VM2762KB2602GB28I2OF2RL2GP2OK2GP2AF26B2YM2SH2762XI2892S525E2ER2W62SQ2752N425O2UT2D61W2WD2O7276311E2EB2R02D62S52R02CH2ZX2NO2BY25M2992762992D62BZ2K62NX2SQ1G310G2SZ3121311J2SQ311M2CG2HK311Q2BZ2MJ311U2SQ311X28H2NR2D631242Q02PY312J2U131262F9311N312928N2BZ26E2F9311V311R311Y312H25M312J2YX275312J2SZ25P3116312N2D62VH26I257312827F26F2TR2SU2DO313E2SQ2QR2NJ28V2QS3137311G2WY31162KX2SQ27F26C2K7312S25M313F312D311W2KE2DD2D62D62VE25O2IG312F2CS2PH310I2ZX310M2ZJ2VR312E312K27631363125311L312P313D2ZQ2BZ311T275312W312F311B2SQ21N311F2SZ314Y313225M21P2WD311K2HX2R4314P2RH313Y312C314T314I311Y311C2AE313P313531373156313A2BZ311O313Z313G2PK313I315P2D6313L2752NK2PT2D621H31222PY31603152314L2K231442AU313W312A315P3141312X31662SQ31462VF311R2F8314B275314D2F9310I2VH25M2VS31422EB2732PN2Z52UR28I1E2UU313Q25M316Z2UF2NT2XI315X2UT28I267315I2PY317A2UY28I2W12ZC26D316E28I28I31472IG31132VI316L2VL310I2S5316O2F92VS28I28931742AN2NF314W28I270317B2763184317E2NI28H31782NG318527525Y31162SZ25X31162Q528I26Z2ZQ2AF26W2F92442ZH2UU23K28O2VH25K318U2AF2XI2602412PM2M02KU2E4310L2XO2PK2K32E42892742SG2HR2TH31102RM2VL27F2CH310L27F2XI31482SQ2AF2O2317Q2L4317S316N2TA2VP314G28W2AU315R2XO274314E2T82KC2TI2ME311F2SG319L2Z52KC319D311F2P8314E2CU2752CJ2CL2542FU2CZ2D12D327Z2SH2FY2G02G22Y02EG2F42E82DY2G22XI2G42G22KB2GA311F24C31572C727D2KB2GE24O2XV2FB316V25M31AZ31AN2DX23X2F9312U31972K32O12OB2LU2KC316J2M72SU2NM316K2KZ2K42K32PK2F82PT2K623U314Z2PY31C82UY2UV2LN2E22PK316P31BW2MB2WR2GC2P22VC2VT2XK2BA2XI2K32W3319F2V32QX2752F82ET316K2SZ31CZ31712PE31CC315726I2VE2PK2QF31CI31CP2782PQ2KU2Y32WU2XE2922ZM31CR2YK2GP2WQ2XI31C12VO2LM2S12S531CB2Y631CD2EC2PV31CG2F931DB31C12YG31CX31D631E52F831DJ2OL2AN31CS2BA31CU2YP2L531DV2F82SZ31DV2Q531DX2K224G2SU31E92GC31DL2GC2VX2F92PK2OO31EI2SM2V9316P2W031BV31BY31BU2F82KU2PC2L72KD310T2922PQ2BF2F831DV312N319R2F9313F2TJ2P62XR2FQ2VU2GP31132UC2F82T42EB313F2ZI26I2I12KB319F2L3310L2K6310V2PK2XX31G42VL31972K0316P2LT25M31AL2CX2FN2CQ2OY25M2FF2FH28N31B331AV2G62P224T31BE311R2FL2C22GU2C531BB2NK2762R52KC31FW31C22NT2PK2CS311Z311Y31613111314J2752MW31D52S1315P31E22W52PK2OM2PY27R2UY2YN2EC27D2AF2AF311431AA2PP31GJ2SG31DP2XL2QW2NM2HR2UQ2KD27F31D02PY31I731DW2NU26I2ON2KD2S531E231EA31HH319Z31DH2FD316P2K62Z82NM31IJ31702L431GA2EA310L2P22HE319F24N2VL2LM31GA31IJ31C32KD310L316K2K62Y0310G2K431IU31AA31IX2HZ31IZ31J131JB31EV31C231BU31J7313H2F931BS31JC2VL319F2KY27T2DG27C2HM2DM2HB2762HE2HG2HI2IG2ZX2HM25B2HO2HQ31K12HZ2HV2PR2I22D92I52BJ24Z2I82IA2802492ID2IF31572HE31DN25M2GR2GT2C42AD276313F31BQ2NT31BS31H82NR2CS31FP315231FP2SZ2OW31FV31JJ312N31IJ311Q31CV312D2CS31CV311Z2CS2I131BS2SZ31LM27531KZ31AA2R031LE2VW2NU311S317P315F31BT2K12SZ2K8315231LP315P31JQ315831LU31CL312V31LY318A2M527031C931862P52DD2K131DJ31LV31DP29931LI3143310G318Z2IG2KB31C0310I2K424L31DQ2JO317P315231MF31LB31M731LD2NN31LV31HH31MO2GC31LZ2CS2W531M12PY31NE3171313W31N431LS31FA2ZQ2V931LH31NB31MD2CS31N32S42PY31NT313T31MK313X31ER31MB31MP2LV31MJ2M531MS2UZ31IS31MW2F931MY31DR316Q31N127531AF2K12S131IW31KB2DJ31JH31J131N531OC2SP31H731JP31JO31BZ2KC31JD31OJ2HY31OL2F931J031ON31HW31NM2WU31OR31IQ2KD31JA31OO31P32K0310L31002JR24P24P29O2GE2EY311P2AD31M731LK2OJ31HD31PP2SZ317Y2Y631N531LT2KC24Q31IS2752NF31GA2WX31HH31OG31IT316P310029Y2G024V2DX2HP24M2AM2SS28K24H24V2452592G127Z2JD27D2RY31QH31QJ2EY31QC24K31QE31GJ2J22842NL2VM24L26I31Q931QT24U31QD24Z2JI2JK2AR310S31IB2K1314W2K631PT2WE2LI2T131J6314O2XV2R031F227631PY31EM25M2NF31IJ31PO31M331PQ31RX31EL31NM31H92H131LN2PY2CA315231RZ2AD2ZI312N2XV31RR31LW31RU2K4314W2CS31Q131NU27631SJ31S02KB31RF31RT31MG31Q031RK2LR315831SC2KD2MA31SF2F931S02P231LF31HY318R31P631Q52M731JT2DE31JW24V31JY24Y28U2PQ31K22HH2HJ31K631KC31K828331KA31OY2DK29P31KQ2HZ31572AL2I52G331GP24T23Q31FJ31LW31172V931H82UT2F831NH31RI27531U8313F31E231RO31N72V731MB31E82QX31U62SQ31NF319G31522N431LB31UD3157315A2FD2MA29931UI312Y2GC31UP31PQ31V031HI31NL2S531NZ31DG315D31UX31MD2F82Q931UM27531VC2VA24J2M52NC31L5317131VJ317131VF2Q531C5314O31IE2MK31NQ2K62OI2GC31VF31HU2PY31VF31V331HH2ET31V52WQ31GA2Z62LD31P42WS319F31E52L42X02S531W131UC31V431UF31IP31V831UG314W2F8317I31VD25M31WQ317131NT31V3310L31UE31T028N29231UV31CO31UY2F831NT31N231PQ31VF31VW2CS31VF2X727631VO2OD2AN312N31VS2M131VU2VA31E531VY31VN2WD31WI31HH23P31US2F931FP31SG31U22GP31IR28I31WC31XY31WD31U131LG2752Q731W52ZJ31W731WA31O02V631P231F3');local GasterBlaster_a=(bit or bit32);local GasterBlaster_d=GasterBlaster_a and GasterBlaster_a.bxor or function(GasterBlaster_a,GasterBlaster_b)local GasterBlaster_c,GasterBlaster_d,GasterBlaster_e=1,0,10 while GasterBlaster_a>0 and GasterBlaster_b>0 do local GasterBlaster_e,GasterBlaster_f=GasterBlaster_a%2,GasterBlaster_b%2 if GasterBlaster_e~=GasterBlaster_f then GasterBlaster_d=GasterBlaster_d+GasterBlaster_c end GasterBlaster_a,GasterBlaster_b,GasterBlaster_c=(GasterBlaster_a-GasterBlaster_e)/2,(GasterBlaster_b-GasterBlaster_f)/2,GasterBlaster_c*2 end if GasterBlaster_a<GasterBlaster_b then GasterBlaster_a=GasterBlaster_b end while GasterBlaster_a>0 do local GasterBlaster_b=GasterBlaster_a%2 if GasterBlaster_b>0 then GasterBlaster_d=GasterBlaster_d+GasterBlaster_c end GasterBlaster_a,GasterBlaster_c=(GasterBlaster_a-GasterBlaster_b)/2,GasterBlaster_c*2 end return GasterBlaster_d end local function GasterBlaster_c(GasterBlaster_b,GasterBlaster_a,GasterBlaster_c)if GasterBlaster_c then local GasterBlaster_a=(GasterBlaster_b/2^(GasterBlaster_a-1))%2^((GasterBlaster_c-1)-(GasterBlaster_a-1)+1);return GasterBlaster_a-GasterBlaster_a%1;else local GasterBlaster_a=2^(GasterBlaster_a-1);return(GasterBlaster_b%(GasterBlaster_a+GasterBlaster_a)>=GasterBlaster_a)and 1 or 0;end;end;local GasterBlaster_a=1;local function GasterBlaster_b()local GasterBlaster_e,GasterBlaster_f,GasterBlaster_b,GasterBlaster_c=GasterBlaster_h(GasterBlaster_j,GasterBlaster_a,GasterBlaster_a+3);GasterBlaster_e=GasterBlaster_d(GasterBlaster_e,202)GasterBlaster_f=GasterBlaster_d(GasterBlaster_f,202)GasterBlaster_b=GasterBlaster_d(GasterBlaster_b,202)GasterBlaster_c=GasterBlaster_d(GasterBlaster_c,202)GasterBlaster_a=GasterBlaster_a+4;return(GasterBlaster_c*16777216)+(GasterBlaster_b*65536)+(GasterBlaster_f*256)+GasterBlaster_e;end;local function GasterBlaster_i()local GasterBlaster_b=GasterBlaster_d(GasterBlaster_h(GasterBlaster_j,GasterBlaster_a,GasterBlaster_a),202);GasterBlaster_a=GasterBlaster_a+1;return GasterBlaster_b;end;local function GasterBlaster_f()local GasterBlaster_b,GasterBlaster_c=GasterBlaster_h(GasterBlaster_j,GasterBlaster_a,GasterBlaster_a+2);GasterBlaster_b=GasterBlaster_d(GasterBlaster_b,202)GasterBlaster_c=GasterBlaster_d(GasterBlaster_c,202)GasterBlaster_a=GasterBlaster_a+2;return(GasterBlaster_c*256)+GasterBlaster_b;end;local function GasterBlaster_q()local GasterBlaster_a=GasterBlaster_b();local GasterBlaster_b=GasterBlaster_b();local GasterBlaster_e=1;local GasterBlaster_d=(GasterBlaster_c(GasterBlaster_b,1,20)*(2^32))+GasterBlaster_a;local GasterBlaster_a=GasterBlaster_c(GasterBlaster_b,21,31);local GasterBlaster_b=((-1)^GasterBlaster_c(GasterBlaster_b,32));if(GasterBlaster_a==0)then if(GasterBlaster_d==0)then return GasterBlaster_b*0;else GasterBlaster_a=1;GasterBlaster_e=0;end;elseif(GasterBlaster_a==2047)then return(GasterBlaster_d==0)and(GasterBlaster_b*(1/0))or(GasterBlaster_b*(0/0));end;return GasterBlaster_o(GasterBlaster_b,GasterBlaster_a-1023)*(GasterBlaster_e+(GasterBlaster_d/(2^52)));end;local GasterBlaster_l=GasterBlaster_b;local function GasterBlaster_o(GasterBlaster_b)local GasterBlaster_c;if(not GasterBlaster_b)then GasterBlaster_b=GasterBlaster_l();if(GasterBlaster_b==0)then return'';end;end;GasterBlaster_c=GasterBlaster_e(GasterBlaster_j,GasterBlaster_a,GasterBlaster_a+GasterBlaster_b-1);GasterBlaster_a=GasterBlaster_a+GasterBlaster_b;local GasterBlaster_b={}for GasterBlaster_a=1,#GasterBlaster_c do GasterBlaster_b[GasterBlaster_a]=GasterBlaster_k(GasterBlaster_d(GasterBlaster_h(GasterBlaster_e(GasterBlaster_c,GasterBlaster_a,GasterBlaster_a)),202))end return GasterBlaster_m(GasterBlaster_b);end;local GasterBlaster_a=GasterBlaster_b;local function GasterBlaster_s(...)return{...},GasterBlaster_n('#',...)end local function GasterBlaster_k()local GasterBlaster_l={};local GasterBlaster_h={};local GasterBlaster_a={};local GasterBlaster_j={[#{"1 + 1 = 111";{782;769;914;347};}]=GasterBlaster_h,[#{{671;303;227;800};"1 + 1 = 111";"1 + 1 = 111";}]=nil,[#{"1 + 1 = 111";{312;428;374;774};"1 + 1 = 111";{48;167;511;536};}]=GasterBlaster_a,[#{"1 + 1 = 111";}]=GasterBlaster_l,};local GasterBlaster_a=GasterBlaster_b()local GasterBlaster_d={}for GasterBlaster_c=1,GasterBlaster_a do local GasterBlaster_b=GasterBlaster_i();local GasterBlaster_a;if(GasterBlaster_b==1)then GasterBlaster_a=(GasterBlaster_i()~=0);elseif(GasterBlaster_b==3)then GasterBlaster_a=GasterBlaster_q();elseif(GasterBlaster_b==0)then GasterBlaster_a=GasterBlaster_o();end;GasterBlaster_d[GasterBlaster_c]=GasterBlaster_a;end;for GasterBlaster_h=1,GasterBlaster_b()do local GasterBlaster_a=GasterBlaster_i();if(GasterBlaster_c(GasterBlaster_a,1,1)==0)then local GasterBlaster_e=GasterBlaster_c(GasterBlaster_a,2,3);local GasterBlaster_g=GasterBlaster_c(GasterBlaster_a,4,6);local GasterBlaster_a={GasterBlaster_f(),GasterBlaster_f(),nil,nil};if(GasterBlaster_e==0)then GasterBlaster_a[3]=GasterBlaster_f();GasterBlaster_a[4]=GasterBlaster_f();elseif(GasterBlaster_e==1)then GasterBlaster_a[3]=GasterBlaster_b();elseif(GasterBlaster_e==2)then GasterBlaster_a[3]=GasterBlaster_b()-(2^16)elseif(GasterBlaster_e==3)then GasterBlaster_a[3]=GasterBlaster_b()-(2^16)GasterBlaster_a[4]=GasterBlaster_f();end;if(GasterBlaster_c(GasterBlaster_g,1,1)==1)then GasterBlaster_a[2]=GasterBlaster_d[GasterBlaster_a[2]]end if(GasterBlaster_c(GasterBlaster_g,2,2)==1)then GasterBlaster_a[3]=GasterBlaster_d[GasterBlaster_a[3]]end if(GasterBlaster_c(GasterBlaster_g,3,3)==1)then GasterBlaster_a[4]=GasterBlaster_d[GasterBlaster_a[4]]end GasterBlaster_l[GasterBlaster_h]=GasterBlaster_a;end end;for GasterBlaster_a=1,GasterBlaster_b()do GasterBlaster_h[GasterBlaster_a-1]=GasterBlaster_k();end;GasterBlaster_j[3]=GasterBlaster_i();return GasterBlaster_j;end;local function GasterBlaster_l(GasterBlaster_a,GasterBlaster_i,GasterBlaster_h)GasterBlaster_a=(GasterBlaster_a==true and GasterBlaster_k())or GasterBlaster_a;return(function(...)local GasterBlaster_d=GasterBlaster_a[1];local GasterBlaster_e=GasterBlaster_a[3];local GasterBlaster_m=GasterBlaster_a[2];local GasterBlaster_k=GasterBlaster_s local GasterBlaster_b=1;local GasterBlaster_f=-1;local GasterBlaster_q={};local GasterBlaster_o={...};local GasterBlaster_n=GasterBlaster_n('#',...)-1;local GasterBlaster_j={};local GasterBlaster_c={};for GasterBlaster_a=0,GasterBlaster_n do if(GasterBlaster_a>=GasterBlaster_e)then GasterBlaster_q[GasterBlaster_a-GasterBlaster_e]=GasterBlaster_o[GasterBlaster_a+1];else GasterBlaster_c[GasterBlaster_a]=GasterBlaster_o[GasterBlaster_a+#{"1 + 1 = 111";}];end;end;local GasterBlaster_a=GasterBlaster_n-GasterBlaster_e+1 local GasterBlaster_a;local GasterBlaster_e;while true do GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[1];if GasterBlaster_e<=57 then if GasterBlaster_e<=28 then if GasterBlaster_e<=13 then if GasterBlaster_e<=6 then if GasterBlaster_e<=2 then if GasterBlaster_e<=0 then if(GasterBlaster_c[GasterBlaster_a[2]]==GasterBlaster_a[4])then GasterBlaster_b=GasterBlaster_b+1;else GasterBlaster_b=GasterBlaster_a[3];end;elseif GasterBlaster_e>1 then GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_a[3];else if(GasterBlaster_c[GasterBlaster_a[2]]<GasterBlaster_c[GasterBlaster_a[4]])then GasterBlaster_b=GasterBlaster_a[3];else GasterBlaster_b=GasterBlaster_b+1;end;end;elseif GasterBlaster_e<=4 then if GasterBlaster_e==3 then local GasterBlaster_f;local GasterBlaster_g;local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_g=GasterBlaster_a[3];GasterBlaster_f=GasterBlaster_c[GasterBlaster_g]for GasterBlaster_a=GasterBlaster_g+1,GasterBlaster_a[4]do GasterBlaster_f=GasterBlaster_f..GasterBlaster_c[GasterBlaster_a];end;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_f;GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];if not GasterBlaster_c[GasterBlaster_a[2]]then GasterBlaster_b=GasterBlaster_b+1;else GasterBlaster_b=GasterBlaster_a[3];end;else local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_g(GasterBlaster_c,GasterBlaster_e+1,GasterBlaster_a[3]))GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];do return GasterBlaster_c[GasterBlaster_a[2]]end GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];do return end;end;elseif GasterBlaster_e==5 then local GasterBlaster_d=GasterBlaster_a[3];local GasterBlaster_b=GasterBlaster_c[GasterBlaster_d]for GasterBlaster_a=GasterBlaster_d+1,GasterBlaster_a[4]do GasterBlaster_b=GasterBlaster_b..GasterBlaster_c[GasterBlaster_a];end;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_b;else if(GasterBlaster_c[GasterBlaster_a[2]]<GasterBlaster_c[GasterBlaster_a[4]])then GasterBlaster_b=GasterBlaster_a[3];else GasterBlaster_b=GasterBlaster_b+1;end;end;elseif GasterBlaster_e<=9 then if GasterBlaster_e<=7 then local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];if(GasterBlaster_c[GasterBlaster_a[2]]<GasterBlaster_c[GasterBlaster_a[4]])then GasterBlaster_b=GasterBlaster_a[3];else GasterBlaster_b=GasterBlaster_b+1;end;elseif GasterBlaster_e>8 then GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]]+GasterBlaster_a[4];else local GasterBlaster_f;local GasterBlaster_e;GasterBlaster_e=GasterBlaster_a[2];GasterBlaster_f=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_c[GasterBlaster_e+1]=GasterBlaster_f;GasterBlaster_c[GasterBlaster_e]=GasterBlaster_f[GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_a[3];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_g(GasterBlaster_c,GasterBlaster_e+1,GasterBlaster_a[3]))GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2];GasterBlaster_f=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_c[GasterBlaster_e+1]=GasterBlaster_f;GasterBlaster_c[GasterBlaster_e]=GasterBlaster_f[GasterBlaster_a[4]];end;elseif GasterBlaster_e<=11 then if GasterBlaster_e>10 then local GasterBlaster_i;local GasterBlaster_j,GasterBlaster_l;local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_a[3];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_j,GasterBlaster_l=GasterBlaster_k(GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1]))GasterBlaster_f=GasterBlaster_l+GasterBlaster_e-1 GasterBlaster_i=0;for GasterBlaster_a=GasterBlaster_e,GasterBlaster_f do GasterBlaster_i=GasterBlaster_i+1;GasterBlaster_c[GasterBlaster_a]=GasterBlaster_j[GasterBlaster_i];end;GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_g(GasterBlaster_c,GasterBlaster_e+1,GasterBlaster_f))GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_b=GasterBlaster_a[3];else GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]]+GasterBlaster_a[4];end;elseif GasterBlaster_e>12 then local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_c[GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];if not GasterBlaster_c[GasterBlaster_a[2]]then GasterBlaster_b=GasterBlaster_b+1;else GasterBlaster_b=GasterBlaster_a[3];end;else local GasterBlaster_f;local GasterBlaster_e;GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_g(GasterBlaster_c,GasterBlaster_e+1,GasterBlaster_a[3]))GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_a[4];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2];GasterBlaster_f=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_c[GasterBlaster_e+1]=GasterBlaster_f;GasterBlaster_c[GasterBlaster_e]=GasterBlaster_f[GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_a[3];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_g(GasterBlaster_c,GasterBlaster_e+1,GasterBlaster_a[3]))GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];end;elseif GasterBlaster_e<=20 then if GasterBlaster_e<=16 then if GasterBlaster_e<=14 then local GasterBlaster_a=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_a]=GasterBlaster_c[GasterBlaster_a](GasterBlaster_c[GasterBlaster_a+1])elseif GasterBlaster_e>15 then GasterBlaster_b=GasterBlaster_a[3];else local GasterBlaster_d=GasterBlaster_a[2];local GasterBlaster_b=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_c[GasterBlaster_d+1]=GasterBlaster_b;GasterBlaster_c[GasterBlaster_d]=GasterBlaster_b[GasterBlaster_a[4]];end;elseif GasterBlaster_e<=18 then if GasterBlaster_e==17 then local GasterBlaster_b=GasterBlaster_a[2];do return GasterBlaster_c[GasterBlaster_b](GasterBlaster_g(GasterBlaster_c,GasterBlaster_b+1,GasterBlaster_a[3]))end;else local GasterBlaster_f;local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_a[3];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_g(GasterBlaster_c,GasterBlaster_e+1,GasterBlaster_a[3]))GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_a[4];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2];GasterBlaster_f=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_c[GasterBlaster_e+1]=GasterBlaster_f;GasterBlaster_c[GasterBlaster_e]=GasterBlaster_f[GasterBlaster_a[4]];end;elseif GasterBlaster_e>19 then local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];if(GasterBlaster_c[GasterBlaster_a[2]]<GasterBlaster_c[GasterBlaster_a[4]])then GasterBlaster_b=GasterBlaster_b+1;else GasterBlaster_b=GasterBlaster_a[3];end;else if not GasterBlaster_c[GasterBlaster_a[2]]then GasterBlaster_b=GasterBlaster_b+1;else GasterBlaster_b=GasterBlaster_a[3];end;end;elseif GasterBlaster_e<=24 then if GasterBlaster_e<=22 then if GasterBlaster_e>21 then local GasterBlaster_h;local GasterBlaster_l,GasterBlaster_j;local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_l,GasterBlaster_j=GasterBlaster_k(GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1]))GasterBlaster_f=GasterBlaster_j+GasterBlaster_e-1 GasterBlaster_h=0;for GasterBlaster_a=GasterBlaster_e,GasterBlaster_f do GasterBlaster_h=GasterBlaster_h+1;GasterBlaster_c[GasterBlaster_a]=GasterBlaster_l[GasterBlaster_h];end;GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2];do return GasterBlaster_c[GasterBlaster_e](GasterBlaster_g(GasterBlaster_c,GasterBlaster_e+1,GasterBlaster_f))end;GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2];do return GasterBlaster_g(GasterBlaster_c,GasterBlaster_e,GasterBlaster_f)end;GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_b=GasterBlaster_a[3];else GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]]-GasterBlaster_c[GasterBlaster_a[4]];end;elseif GasterBlaster_e==23 then do return GasterBlaster_c[GasterBlaster_a[2]]end else GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_c[GasterBlaster_a[3]]]=GasterBlaster_c[GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]]+GasterBlaster_a[4];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_i[GasterBlaster_a[3]]=GasterBlaster_c[GasterBlaster_a[2]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];do return end;end;elseif GasterBlaster_e<=26 then if GasterBlaster_e>25 then if(GasterBlaster_c[GasterBlaster_a[2]]<GasterBlaster_c[GasterBlaster_a[4]])then GasterBlaster_b=GasterBlaster_b+1;else GasterBlaster_b=GasterBlaster_a[3];end;else GasterBlaster_c[GasterBlaster_a[2]]={};end;elseif GasterBlaster_e==27 then local GasterBlaster_a=GasterBlaster_a[2];do return GasterBlaster_g(GasterBlaster_c,GasterBlaster_a,GasterBlaster_f)end;else GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];end;elseif GasterBlaster_e<=42 then if GasterBlaster_e<=35 then if GasterBlaster_e<=31 then if GasterBlaster_e<=29 then GasterBlaster_c[GasterBlaster_a[2]]={};elseif GasterBlaster_e>30 then local GasterBlaster_k=GasterBlaster_m[GasterBlaster_a[3]];local GasterBlaster_g;local GasterBlaster_e={};GasterBlaster_g=GasterBlaster_p({},{__index=function(GasterBlaster_b,GasterBlaster_a)local GasterBlaster_a=GasterBlaster_e[GasterBlaster_a];return GasterBlaster_a[1][GasterBlaster_a[2]];end,__newindex=function(GasterBlaster_c,GasterBlaster_a,GasterBlaster_b)local GasterBlaster_a=GasterBlaster_e[GasterBlaster_a]GasterBlaster_a[1][GasterBlaster_a[2]]=GasterBlaster_b;end;});for GasterBlaster_f=1,GasterBlaster_a[4]do GasterBlaster_b=GasterBlaster_b+1;local GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];if GasterBlaster_a[1]==78 then GasterBlaster_e[GasterBlaster_f-1]={GasterBlaster_c,GasterBlaster_a[3]};else GasterBlaster_e[GasterBlaster_f-1]={GasterBlaster_i,GasterBlaster_a[3]};end;GasterBlaster_j[#GasterBlaster_j+1]=GasterBlaster_e;end;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_l(GasterBlaster_k,GasterBlaster_g,GasterBlaster_h);else if not GasterBlaster_c[GasterBlaster_a[2]]then GasterBlaster_b=GasterBlaster_b+1;else GasterBlaster_b=GasterBlaster_a[3];end;end;elseif GasterBlaster_e<=33 then if GasterBlaster_e==32 then local GasterBlaster_d=GasterBlaster_a[2];local GasterBlaster_e=GasterBlaster_c[GasterBlaster_d]local GasterBlaster_f=GasterBlaster_c[GasterBlaster_d+2];if(GasterBlaster_f>0)then if(GasterBlaster_e>GasterBlaster_c[GasterBlaster_d+1])then GasterBlaster_b=GasterBlaster_a[3];else GasterBlaster_c[GasterBlaster_d+3]=GasterBlaster_e;end elseif(GasterBlaster_e<GasterBlaster_c[GasterBlaster_d+1])then GasterBlaster_b=GasterBlaster_a[3];else GasterBlaster_c[GasterBlaster_d+3]=GasterBlaster_e;end else local GasterBlaster_b=GasterBlaster_a[2]local GasterBlaster_e={GasterBlaster_c[GasterBlaster_b](GasterBlaster_c[GasterBlaster_b+1])};local GasterBlaster_d=0;for GasterBlaster_a=GasterBlaster_b,GasterBlaster_a[4]do GasterBlaster_d=GasterBlaster_d+1;GasterBlaster_c[GasterBlaster_a]=GasterBlaster_e[GasterBlaster_d];end end;elseif GasterBlaster_e>34 then local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2];do return GasterBlaster_c[GasterBlaster_e](GasterBlaster_g(GasterBlaster_c,GasterBlaster_e+1,GasterBlaster_a[3]))end;GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2];do return GasterBlaster_g(GasterBlaster_c,GasterBlaster_e,GasterBlaster_f)end;GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];do return end;else local GasterBlaster_a=GasterBlaster_a[2]local GasterBlaster_d,GasterBlaster_b=GasterBlaster_k(GasterBlaster_c[GasterBlaster_a](GasterBlaster_c[GasterBlaster_a+1]))GasterBlaster_f=GasterBlaster_b+GasterBlaster_a-1 local GasterBlaster_b=0;for GasterBlaster_a=GasterBlaster_a,GasterBlaster_f do GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_c[GasterBlaster_a]=GasterBlaster_d[GasterBlaster_b];end;end;elseif GasterBlaster_e<=38 then if GasterBlaster_e<=36 then do return GasterBlaster_c[GasterBlaster_a[2]]end elseif GasterBlaster_e==37 then local GasterBlaster_i;local GasterBlaster_l,GasterBlaster_j;local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_a[3];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_l,GasterBlaster_j=GasterBlaster_k(GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1]))GasterBlaster_f=GasterBlaster_j+GasterBlaster_e-1 GasterBlaster_i=0;for GasterBlaster_a=GasterBlaster_e,GasterBlaster_f do GasterBlaster_i=GasterBlaster_i+1;GasterBlaster_c[GasterBlaster_a]=GasterBlaster_l[GasterBlaster_i];end;GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_g(GasterBlaster_c,GasterBlaster_e+1,GasterBlaster_f))GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_c[GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_b=GasterBlaster_a[3];else local GasterBlaster_e;local GasterBlaster_i;local GasterBlaster_l,GasterBlaster_m;local GasterBlaster_j;local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2];GasterBlaster_j=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_c[GasterBlaster_e+1]=GasterBlaster_j;GasterBlaster_c[GasterBlaster_e]=GasterBlaster_j[GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_a[3];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_g(GasterBlaster_c,GasterBlaster_e+1,GasterBlaster_a[3]))GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2];GasterBlaster_j=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_c[GasterBlaster_e+1]=GasterBlaster_j;GasterBlaster_c[GasterBlaster_e]=GasterBlaster_j[GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_l,GasterBlaster_m=GasterBlaster_k(GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1]))GasterBlaster_f=GasterBlaster_m+GasterBlaster_e-1 GasterBlaster_i=0;for GasterBlaster_a=GasterBlaster_e,GasterBlaster_f do GasterBlaster_i=GasterBlaster_i+1;GasterBlaster_c[GasterBlaster_a]=GasterBlaster_l[GasterBlaster_i];end;GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_l={GasterBlaster_c[GasterBlaster_e](GasterBlaster_g(GasterBlaster_c,GasterBlaster_e+1,GasterBlaster_f))};GasterBlaster_i=0;for GasterBlaster_a=GasterBlaster_e,GasterBlaster_a[4]do GasterBlaster_i=GasterBlaster_i+1;GasterBlaster_c[GasterBlaster_a]=GasterBlaster_l[GasterBlaster_i];end GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_b=GasterBlaster_a[3];end;elseif GasterBlaster_e<=40 then if GasterBlaster_e>39 then local GasterBlaster_d=GasterBlaster_a[2]local GasterBlaster_e={GasterBlaster_c[GasterBlaster_d](GasterBlaster_c[GasterBlaster_d+1])};local GasterBlaster_b=0;for GasterBlaster_a=GasterBlaster_d,GasterBlaster_a[4]do GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_c[GasterBlaster_a]=GasterBlaster_e[GasterBlaster_b];end else local GasterBlaster_i;local GasterBlaster_l,GasterBlaster_j;local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_a[3];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_l,GasterBlaster_j=GasterBlaster_k(GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1]))GasterBlaster_f=GasterBlaster_j+GasterBlaster_e-1 GasterBlaster_i=0;for GasterBlaster_a=GasterBlaster_e,GasterBlaster_f do GasterBlaster_i=GasterBlaster_i+1;GasterBlaster_c[GasterBlaster_a]=GasterBlaster_l[GasterBlaster_i];end;GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_g(GasterBlaster_c,GasterBlaster_e+1,GasterBlaster_f))GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_b=GasterBlaster_a[3];end;elseif GasterBlaster_e>41 then local GasterBlaster_b=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_b]=GasterBlaster_c[GasterBlaster_b](GasterBlaster_g(GasterBlaster_c,GasterBlaster_b+1,GasterBlaster_a[3]))else local GasterBlaster_a=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_a](GasterBlaster_c[GasterBlaster_a+1])end;elseif GasterBlaster_e<=49 then if GasterBlaster_e<=45 then if GasterBlaster_e<=43 then GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_a[4];elseif GasterBlaster_e==44 then local GasterBlaster_e;local GasterBlaster_g;local GasterBlaster_f;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_f=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_f]=GasterBlaster_c[GasterBlaster_f](GasterBlaster_c[GasterBlaster_f+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_g=GasterBlaster_a[3];GasterBlaster_e=GasterBlaster_c[GasterBlaster_g]for GasterBlaster_a=GasterBlaster_g+1,GasterBlaster_a[4]do GasterBlaster_e=GasterBlaster_e..GasterBlaster_c[GasterBlaster_a];end;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_e;GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];if GasterBlaster_c[GasterBlaster_a[2]]then GasterBlaster_b=GasterBlaster_b+1;else GasterBlaster_b=GasterBlaster_a[3];end;else GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];end;elseif GasterBlaster_e<=47 then if GasterBlaster_e>46 then local GasterBlaster_a=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_a]=GasterBlaster_c[GasterBlaster_a](GasterBlaster_c[GasterBlaster_a+1])else local GasterBlaster_d=GasterBlaster_a[2];local GasterBlaster_f=GasterBlaster_c[GasterBlaster_d+2];local GasterBlaster_e=GasterBlaster_c[GasterBlaster_d]+GasterBlaster_f;GasterBlaster_c[GasterBlaster_d]=GasterBlaster_e;if(GasterBlaster_f>0)then if(GasterBlaster_e<=GasterBlaster_c[GasterBlaster_d+1])then GasterBlaster_b=GasterBlaster_a[3];GasterBlaster_c[GasterBlaster_d+3]=GasterBlaster_e;end elseif(GasterBlaster_e>=GasterBlaster_c[GasterBlaster_d+1])then GasterBlaster_b=GasterBlaster_a[3];GasterBlaster_c[GasterBlaster_d+3]=GasterBlaster_e;end end;elseif GasterBlaster_e>48 then local GasterBlaster_d=GasterBlaster_a[2];local GasterBlaster_f=GasterBlaster_a[4];local GasterBlaster_e=GasterBlaster_d+2 local GasterBlaster_d={GasterBlaster_c[GasterBlaster_d](GasterBlaster_c[GasterBlaster_d+1],GasterBlaster_c[GasterBlaster_e])};for GasterBlaster_a=1,GasterBlaster_f do GasterBlaster_c[GasterBlaster_e+GasterBlaster_a]=GasterBlaster_d[GasterBlaster_a];end;local GasterBlaster_d=GasterBlaster_d[1]if GasterBlaster_d then GasterBlaster_c[GasterBlaster_e]=GasterBlaster_d GasterBlaster_b=GasterBlaster_a[3];else GasterBlaster_b=GasterBlaster_b+1;end;else local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]]-GasterBlaster_c[GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_a[3];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];end;elseif GasterBlaster_e<=53 then if GasterBlaster_e<=51 then if GasterBlaster_e==50 then GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_c[GasterBlaster_a[4]];else do return end;end;elseif GasterBlaster_e>52 then local GasterBlaster_f=GasterBlaster_a[2];local GasterBlaster_e={};for GasterBlaster_a=1,#GasterBlaster_j do local GasterBlaster_a=GasterBlaster_j[GasterBlaster_a];for GasterBlaster_b=0,#GasterBlaster_a do local GasterBlaster_a=GasterBlaster_a[GasterBlaster_b];local GasterBlaster_d=GasterBlaster_a[1];local GasterBlaster_b=GasterBlaster_a[2];if GasterBlaster_d==GasterBlaster_c and GasterBlaster_b>=GasterBlaster_f then GasterBlaster_e[GasterBlaster_b]=GasterBlaster_d[GasterBlaster_b];GasterBlaster_a[1]=GasterBlaster_e;end;end;end;else local GasterBlaster_a=GasterBlaster_a[2];do return GasterBlaster_g(GasterBlaster_c,GasterBlaster_a,GasterBlaster_f)end;end;elseif GasterBlaster_e<=55 then if GasterBlaster_e==54 then GasterBlaster_i[GasterBlaster_a[3]]=GasterBlaster_c[GasterBlaster_a[2]];else GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];end;elseif GasterBlaster_e>56 then if GasterBlaster_c[GasterBlaster_a[2]]then GasterBlaster_b=GasterBlaster_b+1;else GasterBlaster_b=GasterBlaster_a[3];end;else local GasterBlaster_f=GasterBlaster_a[2];local GasterBlaster_e={};for GasterBlaster_a=1,#GasterBlaster_j do local GasterBlaster_a=GasterBlaster_j[GasterBlaster_a];for GasterBlaster_b=0,#GasterBlaster_a do local GasterBlaster_b=GasterBlaster_a[GasterBlaster_b];local GasterBlaster_d=GasterBlaster_b[1];local GasterBlaster_a=GasterBlaster_b[2];if GasterBlaster_d==GasterBlaster_c and GasterBlaster_a>=GasterBlaster_f then GasterBlaster_e[GasterBlaster_a]=GasterBlaster_d[GasterBlaster_a];GasterBlaster_b[1]=GasterBlaster_e;end;end;end;end;elseif GasterBlaster_e<=86 then if GasterBlaster_e<=71 then if GasterBlaster_e<=64 then if GasterBlaster_e<=60 then if GasterBlaster_e<=58 then GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_c[GasterBlaster_a[4]];elseif GasterBlaster_e>59 then local GasterBlaster_b=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_b]=GasterBlaster_c[GasterBlaster_b](GasterBlaster_g(GasterBlaster_c,GasterBlaster_b+1,GasterBlaster_a[3]))else local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]]-GasterBlaster_c[GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_a[3];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];end;elseif GasterBlaster_e<=62 then if GasterBlaster_e>61 then do return end;else GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];end;elseif GasterBlaster_e==63 then if(GasterBlaster_c[GasterBlaster_a[2]]==GasterBlaster_a[4])then GasterBlaster_b=GasterBlaster_b+1;else GasterBlaster_b=GasterBlaster_a[3];end;else local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_c[GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];do return end;end;elseif GasterBlaster_e<=67 then if GasterBlaster_e<=65 then GasterBlaster_c[GasterBlaster_a[2]]=(GasterBlaster_a[3]~=0);elseif GasterBlaster_e==66 then local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];if(GasterBlaster_c[GasterBlaster_a[2]]<GasterBlaster_c[GasterBlaster_a[4]])then GasterBlaster_b=GasterBlaster_b+1;else GasterBlaster_b=GasterBlaster_a[3];end;else GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_a[4];end;elseif GasterBlaster_e<=69 then if GasterBlaster_e==68 then local GasterBlaster_f;local GasterBlaster_k;local GasterBlaster_h;local GasterBlaster_i;local GasterBlaster_l;local GasterBlaster_e;GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_c[GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=(GasterBlaster_a[3]~=0);GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e](GasterBlaster_g(GasterBlaster_c,GasterBlaster_e+1,GasterBlaster_a[3]))GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2];GasterBlaster_l={};for GasterBlaster_a=1,#GasterBlaster_j do GasterBlaster_i=GasterBlaster_j[GasterBlaster_a];for GasterBlaster_a=0,#GasterBlaster_i do GasterBlaster_h=GasterBlaster_i[GasterBlaster_a];GasterBlaster_k=GasterBlaster_h[1];GasterBlaster_f=GasterBlaster_h[2];if GasterBlaster_k==GasterBlaster_c and GasterBlaster_f>=GasterBlaster_e then GasterBlaster_l[GasterBlaster_f]=GasterBlaster_k[GasterBlaster_f];GasterBlaster_h[1]=GasterBlaster_l;end;end;end;else local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];if(GasterBlaster_c[GasterBlaster_a[2]]<GasterBlaster_c[GasterBlaster_a[4]])then GasterBlaster_b=GasterBlaster_b+1;else GasterBlaster_b=GasterBlaster_a[3];end;end;elseif GasterBlaster_e>70 then if(GasterBlaster_c[GasterBlaster_a[2]]~=GasterBlaster_a[4])then GasterBlaster_b=GasterBlaster_b+1;else GasterBlaster_b=GasterBlaster_a[3];end;else local GasterBlaster_e=GasterBlaster_a[2];local GasterBlaster_f=GasterBlaster_a[4];local GasterBlaster_d=GasterBlaster_e+2 local GasterBlaster_e={GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1],GasterBlaster_c[GasterBlaster_d])};for GasterBlaster_a=1,GasterBlaster_f do GasterBlaster_c[GasterBlaster_d+GasterBlaster_a]=GasterBlaster_e[GasterBlaster_a];end;local GasterBlaster_e=GasterBlaster_e[1]if GasterBlaster_e then GasterBlaster_c[GasterBlaster_d]=GasterBlaster_e GasterBlaster_b=GasterBlaster_a[3];else GasterBlaster_b=GasterBlaster_b+1;end;end;elseif GasterBlaster_e<=78 then if GasterBlaster_e<=74 then if GasterBlaster_e<=72 then GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]]-GasterBlaster_c[GasterBlaster_a[4]];elseif GasterBlaster_e>73 then GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_l(GasterBlaster_m[GasterBlaster_a[3]],nil,GasterBlaster_h);else local GasterBlaster_a=GasterBlaster_a[2]local GasterBlaster_d,GasterBlaster_b=GasterBlaster_k(GasterBlaster_c[GasterBlaster_a](GasterBlaster_c[GasterBlaster_a+1]))GasterBlaster_f=GasterBlaster_b+GasterBlaster_a-1 local GasterBlaster_b=0;for GasterBlaster_a=GasterBlaster_a,GasterBlaster_f do GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_c[GasterBlaster_a]=GasterBlaster_d[GasterBlaster_b];end;end;elseif GasterBlaster_e<=76 then if GasterBlaster_e==75 then local GasterBlaster_a=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_a]=GasterBlaster_c[GasterBlaster_a](GasterBlaster_g(GasterBlaster_c,GasterBlaster_a+1,GasterBlaster_f))else local GasterBlaster_b=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_b](GasterBlaster_g(GasterBlaster_c,GasterBlaster_b+1,GasterBlaster_a[3]))end;elseif GasterBlaster_e==77 then if GasterBlaster_c[GasterBlaster_a[2]]then GasterBlaster_b=GasterBlaster_b+1;else GasterBlaster_b=GasterBlaster_a[3];end;else GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];end;elseif GasterBlaster_e<=82 then if GasterBlaster_e<=80 then if GasterBlaster_e==79 then local GasterBlaster_h;local GasterBlaster_j,GasterBlaster_l;local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_j,GasterBlaster_l=GasterBlaster_k(GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1]))GasterBlaster_f=GasterBlaster_l+GasterBlaster_e-1 GasterBlaster_h=0;for GasterBlaster_a=GasterBlaster_e,GasterBlaster_f do GasterBlaster_h=GasterBlaster_h+1;GasterBlaster_c[GasterBlaster_a]=GasterBlaster_j[GasterBlaster_h];end;GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2];do return GasterBlaster_c[GasterBlaster_e](GasterBlaster_g(GasterBlaster_c,GasterBlaster_e+1,GasterBlaster_f))end;GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2];do return GasterBlaster_g(GasterBlaster_c,GasterBlaster_e,GasterBlaster_f)end;else local GasterBlaster_a=GasterBlaster_a[2];do return GasterBlaster_c[GasterBlaster_a](GasterBlaster_g(GasterBlaster_c,GasterBlaster_a+1,GasterBlaster_f))end;end;elseif GasterBlaster_e>81 then local GasterBlaster_d=GasterBlaster_a[2];local GasterBlaster_f=GasterBlaster_c[GasterBlaster_d+2];local GasterBlaster_e=GasterBlaster_c[GasterBlaster_d]+GasterBlaster_f;GasterBlaster_c[GasterBlaster_d]=GasterBlaster_e;if(GasterBlaster_f>0)then if(GasterBlaster_e<=GasterBlaster_c[GasterBlaster_d+1])then GasterBlaster_b=GasterBlaster_a[3];GasterBlaster_c[GasterBlaster_d+3]=GasterBlaster_e;end elseif(GasterBlaster_e>=GasterBlaster_c[GasterBlaster_d+1])then GasterBlaster_b=GasterBlaster_a[3];GasterBlaster_c[GasterBlaster_d+3]=GasterBlaster_e;end else local GasterBlaster_d=GasterBlaster_a[3];local GasterBlaster_b=GasterBlaster_c[GasterBlaster_d]for GasterBlaster_a=GasterBlaster_d+1,GasterBlaster_a[4]do GasterBlaster_b=GasterBlaster_b..GasterBlaster_c[GasterBlaster_a];end;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_b;end;elseif GasterBlaster_e<=84 then if GasterBlaster_e==83 then GasterBlaster_c[GasterBlaster_a[2]]=(GasterBlaster_a[3]~=0);else local GasterBlaster_d=GasterBlaster_a[2];local GasterBlaster_e=GasterBlaster_c[GasterBlaster_d]local GasterBlaster_f=GasterBlaster_c[GasterBlaster_d+2];if(GasterBlaster_f>0)then if(GasterBlaster_e>GasterBlaster_c[GasterBlaster_d+1])then GasterBlaster_b=GasterBlaster_a[3];else GasterBlaster_c[GasterBlaster_d+3]=GasterBlaster_e;end elseif(GasterBlaster_e<GasterBlaster_c[GasterBlaster_d+1])then GasterBlaster_b=GasterBlaster_a[3];else GasterBlaster_c[GasterBlaster_d+3]=GasterBlaster_e;end end;elseif GasterBlaster_e==85 then local GasterBlaster_a=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_a]=GasterBlaster_c[GasterBlaster_a](GasterBlaster_g(GasterBlaster_c,GasterBlaster_a+1,GasterBlaster_f))else local GasterBlaster_d=GasterBlaster_a[2];local GasterBlaster_b=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_c[GasterBlaster_d+1]=GasterBlaster_b;GasterBlaster_c[GasterBlaster_d]=GasterBlaster_b[GasterBlaster_a[4]];end;elseif GasterBlaster_e<=101 then if GasterBlaster_e<=93 then if GasterBlaster_e<=89 then if GasterBlaster_e<=87 then GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];elseif GasterBlaster_e==88 then local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];if(GasterBlaster_c[GasterBlaster_a[2]]<GasterBlaster_c[GasterBlaster_a[4]])then GasterBlaster_b=GasterBlaster_b+1;else GasterBlaster_b=GasterBlaster_a[3];end;else local GasterBlaster_d=GasterBlaster_a[2]local GasterBlaster_e={GasterBlaster_c[GasterBlaster_d](GasterBlaster_g(GasterBlaster_c,GasterBlaster_d+1,GasterBlaster_f))};local GasterBlaster_b=0;for GasterBlaster_a=GasterBlaster_d,GasterBlaster_a[4]do GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_c[GasterBlaster_a]=GasterBlaster_e[GasterBlaster_b];end end;elseif GasterBlaster_e<=91 then if GasterBlaster_e>90 then local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=(GasterBlaster_a[3]~=0);GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e](GasterBlaster_g(GasterBlaster_c,GasterBlaster_e+1,GasterBlaster_a[3]))GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];else if(GasterBlaster_c[GasterBlaster_a[2]]<GasterBlaster_c[GasterBlaster_a[4]])then GasterBlaster_b=GasterBlaster_b+1;else GasterBlaster_b=GasterBlaster_a[3];end;end;elseif GasterBlaster_e>92 then local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_c[GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];do return end;else GasterBlaster_c[GasterBlaster_a[2]]={};GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_a[4];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_a[4];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_a[4];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_a[4];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_a[4];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_a[4];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_a[4];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_a[4];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]={};end;elseif GasterBlaster_e<=97 then if GasterBlaster_e<=95 then if GasterBlaster_e==94 then local GasterBlaster_a=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_a](GasterBlaster_c[GasterBlaster_a+1])else local GasterBlaster_b=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_b](GasterBlaster_g(GasterBlaster_c,GasterBlaster_b+1,GasterBlaster_a[3]))end;elseif GasterBlaster_e>96 then local GasterBlaster_d=GasterBlaster_a[2]local GasterBlaster_e={GasterBlaster_c[GasterBlaster_d](GasterBlaster_g(GasterBlaster_c,GasterBlaster_d+1,GasterBlaster_f))};local GasterBlaster_b=0;for GasterBlaster_a=GasterBlaster_d,GasterBlaster_a[4]do GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_c[GasterBlaster_a]=GasterBlaster_e[GasterBlaster_b];end else local GasterBlaster_b=GasterBlaster_a[2];do return GasterBlaster_c[GasterBlaster_b](GasterBlaster_g(GasterBlaster_c,GasterBlaster_b+1,GasterBlaster_a[3]))end;end;elseif GasterBlaster_e<=99 then if GasterBlaster_e>98 then GasterBlaster_b=GasterBlaster_a[3];else local GasterBlaster_f;local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2];GasterBlaster_f=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_c[GasterBlaster_e+1]=GasterBlaster_f;GasterBlaster_c[GasterBlaster_e]=GasterBlaster_f[GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_a[3];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_g(GasterBlaster_c,GasterBlaster_e+1,GasterBlaster_a[3]))GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_a[4];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];end;elseif GasterBlaster_e>100 then local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_g(GasterBlaster_c,GasterBlaster_e+1,GasterBlaster_a[3]))GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];else GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_c[GasterBlaster_a[3]]]=GasterBlaster_c[GasterBlaster_a[4]];end;elseif GasterBlaster_e<=108 then if GasterBlaster_e<=104 then if GasterBlaster_e<=102 then GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];elseif GasterBlaster_e==103 then local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];if(GasterBlaster_c[GasterBlaster_a[2]]<GasterBlaster_c[GasterBlaster_a[4]])then GasterBlaster_b=GasterBlaster_a[3];else GasterBlaster_b=GasterBlaster_b+1;end;else local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_c[GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];do return end;end;elseif GasterBlaster_e<=106 then if GasterBlaster_e==105 then if(GasterBlaster_c[GasterBlaster_a[2]]~=GasterBlaster_a[4])then GasterBlaster_b=GasterBlaster_b+1;else GasterBlaster_b=GasterBlaster_a[3];end;else local GasterBlaster_g;local GasterBlaster_f;local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]]-GasterBlaster_c[GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_a[3];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_a[3];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2];GasterBlaster_f=GasterBlaster_c[GasterBlaster_e]GasterBlaster_g=GasterBlaster_c[GasterBlaster_e+2];if(GasterBlaster_g>0)then if(GasterBlaster_f>GasterBlaster_c[GasterBlaster_e+1])then GasterBlaster_b=GasterBlaster_a[3];else GasterBlaster_c[GasterBlaster_e+3]=GasterBlaster_f;end elseif(GasterBlaster_f<GasterBlaster_c[GasterBlaster_e+1])then GasterBlaster_b=GasterBlaster_a[3];else GasterBlaster_c[GasterBlaster_e+3]=GasterBlaster_f;end end;elseif GasterBlaster_e>107 then local GasterBlaster_g=GasterBlaster_m[GasterBlaster_a[3]];local GasterBlaster_f;local GasterBlaster_e={};GasterBlaster_f=GasterBlaster_p({},{__index=function(GasterBlaster_b,GasterBlaster_a)local GasterBlaster_a=GasterBlaster_e[GasterBlaster_a];return GasterBlaster_a[1][GasterBlaster_a[2]];end,__newindex=function(GasterBlaster_c,GasterBlaster_a,GasterBlaster_b)local GasterBlaster_a=GasterBlaster_e[GasterBlaster_a]GasterBlaster_a[1][GasterBlaster_a[2]]=GasterBlaster_b;end;});for GasterBlaster_f=1,GasterBlaster_a[4]do GasterBlaster_b=GasterBlaster_b+1;local GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];if GasterBlaster_a[1]==78 then GasterBlaster_e[GasterBlaster_f-1]={GasterBlaster_c,GasterBlaster_a[3]};else GasterBlaster_e[GasterBlaster_f-1]={GasterBlaster_i,GasterBlaster_a[3]};end;GasterBlaster_j[#GasterBlaster_j+1]=GasterBlaster_e;end;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_l(GasterBlaster_g,GasterBlaster_f,GasterBlaster_h);else GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_l(GasterBlaster_m[GasterBlaster_a[3]],nil,GasterBlaster_h);end;elseif GasterBlaster_e<=112 then if GasterBlaster_e<=110 then if GasterBlaster_e==109 then local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_c[GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];do return end;else local GasterBlaster_e;local GasterBlaster_i;local GasterBlaster_j,GasterBlaster_m;local GasterBlaster_l;local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_h[GasterBlaster_a[3]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2];GasterBlaster_l=GasterBlaster_c[GasterBlaster_a[3]];GasterBlaster_c[GasterBlaster_e+1]=GasterBlaster_l;GasterBlaster_c[GasterBlaster_e]=GasterBlaster_l[GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_j,GasterBlaster_m=GasterBlaster_k(GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1]))GasterBlaster_f=GasterBlaster_m+GasterBlaster_e-1 GasterBlaster_i=0;for GasterBlaster_a=GasterBlaster_e,GasterBlaster_f do GasterBlaster_i=GasterBlaster_i+1;GasterBlaster_c[GasterBlaster_a]=GasterBlaster_j[GasterBlaster_i];end;GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_j={GasterBlaster_c[GasterBlaster_e](GasterBlaster_g(GasterBlaster_c,GasterBlaster_e+1,GasterBlaster_f))};GasterBlaster_i=0;for GasterBlaster_a=GasterBlaster_e,GasterBlaster_a[4]do GasterBlaster_i=GasterBlaster_i+1;GasterBlaster_c[GasterBlaster_a]=GasterBlaster_j[GasterBlaster_i];end GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_b=GasterBlaster_a[3];end;elseif GasterBlaster_e>111 then GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_c[GasterBlaster_a[3]]]=GasterBlaster_c[GasterBlaster_a[4]];else GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_i[GasterBlaster_a[3]];end;elseif GasterBlaster_e<=114 then if GasterBlaster_e>113 then local GasterBlaster_a=GasterBlaster_a[2];do return GasterBlaster_c[GasterBlaster_a](GasterBlaster_g(GasterBlaster_c,GasterBlaster_a+1,GasterBlaster_f))end;else local GasterBlaster_e;GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_e=GasterBlaster_a[2]GasterBlaster_c[GasterBlaster_e]=GasterBlaster_c[GasterBlaster_e](GasterBlaster_c[GasterBlaster_e+1])GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]][GasterBlaster_a[3]]=GasterBlaster_c[GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_c[GasterBlaster_a[3]][GasterBlaster_a[4]];GasterBlaster_b=GasterBlaster_b+1;GasterBlaster_a=GasterBlaster_d[GasterBlaster_b];if GasterBlaster_c[GasterBlaster_a[2]]then GasterBlaster_b=GasterBlaster_b+1;else GasterBlaster_b=GasterBlaster_a[3];end;end;elseif GasterBlaster_e==115 then GasterBlaster_c[GasterBlaster_a[2]]=GasterBlaster_a[3];else GasterBlaster_i[GasterBlaster_a[3]]=GasterBlaster_c[GasterBlaster_a[2]];end;GasterBlaster_b=GasterBlaster_b+1;end;end);end;return GasterBlaster_l(true,{},GasterBlaster_r())();end)(string.byte,table.insert,setmetatable);
+
+    end)
+end
